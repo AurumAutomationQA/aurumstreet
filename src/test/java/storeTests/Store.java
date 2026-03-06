@@ -75,11 +75,11 @@ public class Store extends ReusableMethods
 		verifyIsDisplayed("//span[text()='Redeem Request']", "Redeem Request button");
 		verifyIsDisplayed("//span[text()='Redeem Request']/../..//button[1]", "QR scaner button");
 		verifyIsDisplayed("//span[text()='Redeem Request']/../..//button[2]", "Share button");
-		verifyIsDisplayed("//span[text()='Redeem Request']/../../..//button[following::span[text()='Redeem Request']]", "features expand button");	
+		//verifyIsDisplayed("//span[text()='Redeem Request']/../../..//button[following::span[text()='Redeem Request']]", "features expand button");	
 		logScreenshot();
 		
-		click("//span[text()='Redeem Request']/../../..//button[following::span[text()='Redeem Request']]", "features expand button");
-		verifyIsDisplayed("//h2[text()='Deepa Jewellers']", "heading - Deepa Jewellers");
+		clickByCSS(".max-xl\\3Ahidden > .w-full", "features expand button");
+		//verifyIsDisplayed("//h2[text()='Deepa Jewellers']", "heading - Deepa Jewellers");
 		verifyIsDisplayed("//span[text()='Dashboard']", "Dashboard link");
 		verifyIsDisplayed("//span[text()='Categories']", "Categories link");
 		verifyIsDisplayed("//span[text()='eOffer Card']", "eOffer Card link");

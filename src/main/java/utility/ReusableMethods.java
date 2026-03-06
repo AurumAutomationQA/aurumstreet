@@ -241,6 +241,17 @@ public class ReusableMethods {
 		}
 	}
 
+	protected void clickByCSS(String css,String elementName){
+		try {
+			
+			driver.findElement(By.cssSelector(css)).click();
+			getTest().log(LogStatus.INFO, "clicked "+elementName);
+		} catch (Exception e) {
+			getTest().log(LogStatus.FAIL, "Exception while clicking "+elementName+" is due to <br/>"+e);
+			new Assertion().fail();
+		}
+	}
+
 	protected void verifyIsDisplayed(String xpath,String elementName){
 		try {
 			ewait(xpath);
