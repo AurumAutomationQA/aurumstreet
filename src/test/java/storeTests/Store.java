@@ -1,6 +1,5 @@
 package storeTests;
 
-import org.openqa.selenium.logging.Logs;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
