@@ -1,5 +1,8 @@
 package storeTests;
 
+import java.io.IOException;
+import java.util.concurrent.TimeoutException;
+
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -23,9 +26,9 @@ public class Store extends ReusableMethods
 	}
 	
 	@Test(priority=1)
-	public void launchTest() {
+	public void launchTest() throws IOException, TimeoutException {
 		startTest("Navigate to store");
-		openBrowser("https://deepa.aurumconnect.in/");
+		openBrowser("chrome","https://deepa.aurumconnect.in/");
 		verifyIsDisplayed("//p[text()='Deepa Jewellers']", "Deepa Jewellers header");
 		verifyIsDisplayed("//a[text()='Login']", "Login link");
 		logScreenshot();
