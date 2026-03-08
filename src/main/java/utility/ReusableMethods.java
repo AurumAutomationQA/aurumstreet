@@ -1,5 +1,7 @@
 package utility;
 
+import static org.testng.Assert.fail;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -12,13 +14,19 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
+import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.asserts.Assertion;
@@ -98,7 +106,7 @@ public class ReusableMethods {
 		}
 		if(reportLocation==null && htmlLocation==null && reports==null)
 		{
-			reportLocation 			= "C:/Reports/Automation "+new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(new Date())+"/";	
+			reportLocation 			= System.getProperty("user.dir") + "/Reports/Automation_"+new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(new Date())+"/";	
 			htmlLocation 			= "Automation_"+new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss'.html'").format(new Date());                           				
 			reports 				= new ExtentReports(reportLocation+htmlLocation,false);
 		}
@@ -123,71 +131,74 @@ public class ReusableMethods {
 	 * 
 	 * }
 	 */
-	public void openBrowser(String URL)
+	
+	
+	public void openBrowser(String browser, String URL) throws IOException, TimeoutException 
 	{
-	    try
-		{
-			/*
-			 * System.out.println("launching chrome browser");
-			 * System.setProperty("webdriver.chrome.driver", "./chromedriver41.exe");
-			 * 
-			 * ChromeOptions options = new ChromeOptions();
-			 * options.setExperimentalOption("useAutomationExtension", false);
-			 * options.addArguments("disable-infobars");
-			 * 
-			 * String location = reportLocation; location = location.substring(0,
-			 * location.length() - 1).replace("/", "\\");
-			 * 
-			 * Map<String, Object> preferences = new Hashtable<String, Object>();
-			 * preferences.put("profile.default_content_settings.popups", 0);
-			 * preferences.put("download.prompt_for_download", "false");
-			 * preferences.put("download.default_directory", location);
-			 * 
-			 * System.out.println(reportLocation); System.out.println(location);
-			 * 
-			 * // disable flash and the PDF viewer
-			 * preferences.put("plugins.plugins_disabled", new String[] {
-			 * "Adobe Flash Player", "Chrome PDF Viewer" });
-			 * 
-			 * options.setExperimentalOption("prefs", preferences);
-			 * 
-			 * driver = new ChromeDriver(options); driver.manage().window().maximize();
-			 * driver.get(URL);
-			 * 
-			 * getTest().log(LogStatus.INFO,
-			 * "Opened chrome Browser Successfully and navigated to url : </br>" + URL);
-			 */
-	    	
-		
-			/*
-			 * System.setProperty("webdriver.chrome.driver","./chromedriver.exe");
-			 * 
-			 * ChromeOptions options = new ChromeOptions();
-			 * options.addArguments("--start-maximized");
-			 * 
-			 * WebDriver driver = new ChromeDriver(options);
-			 */
-
-	         System.setProperty("webdriver.gecko.driver", "./geckodriver.exe");
-	         driver = new FirefoxDriver();
-	         driver.manage().window().maximize();
-	         
-	         
-	         driver.get(URL);
-
-	         System.out.println("Chrome Browser Launched Successfully");
-		
-	         getTest().log(LogStatus.INFO,
+		switch (browser.toLowerCase().trim()) {
+		case "chrome": {
+			ChromeOptions options = new ChromeOptions();
+			options.addArguments("--disable-notifications");
+			driver = new ChromeDriver(options);
+			driver.manage().window().maximize();
+			getTest().log(LogStatus.INFO,
 	    			  "Opened chrome Browser Successfully and navigated to url : </br>" + URL);
 		}
-	    catch (Exception e)
-	    {
-	        e.printStackTrace();
-	        getTest().log(LogStatus.WARNING,
-	                "Launching Chrome browser UnSuccessful</br>" + e + "</br>"
-	                        + getTest().addScreenCapture(tearDown(driver)));
-	        new Assertion().fail();
-	    }
+			break;
+		case "firefox": {
+			FirefoxOptions options = new FirefoxOptions();
+			options.addArguments("--window-size=1400,900");
+			options.addArguments("--headless");
+			options.addArguments("--disable-notifications");
+			driver = new FirefoxDriver(options);
+			getTest().log(LogStatus.INFO,
+	    			  "Opened FireFox Browser Successfully and navigated to url : </br>" + URL);
+		}
+			break;
+		case "headless": {
+			ChromeOptions options = new ChromeOptions();
+			options.addArguments("--headless");
+			options.addArguments("--disable-notifications");
+			options.addArguments("start-maximized");
+			driver = new ChromeDriver(options);
+			getTest().log(LogStatus.INFO,
+	    			  "Opened Headless Browser Successfully and navigated to url : </br>" + URL);
+		}
+			break;
+
+		case "edge": {
+			EdgeOptions options = new EdgeOptions();
+			options.addArguments("--window-size=1400,900");
+			options.addArguments("--headless");
+			options.addArguments("--disable-notifications");
+			driver = new EdgeDriver(options);
+			getTest().log(LogStatus.INFO,
+	    			  "Opened Edge Browser Successfully and navigated to url : </br>" + URL);
+		}
+			break;
+
+		default:
+			ChromeOptions options = new ChromeOptions();
+			options.addArguments("--window-size=1400,900");
+			options.addArguments("--headless");
+			options.addArguments("--disable-notifications");
+			driver = new ChromeDriver(options);
+			getTest().log(LogStatus.INFO,
+	    			  "Opened Chrome Browser Successfully and navigated to url : </br>" + URL);
+			break;
+		}
+		try {
+			driver.manage().timeouts().pageLoadTimeout(Duration.ofMinutes(1));
+			try {
+				driver.get(URL);
+			} catch (Exception e) {
+				fail("Unable to open the browser", e);
+			}
+		} catch (Exception e) {
+			fail("server down", e);
+		}
+		driver.manage().window().maximize();
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
 	}
 	
 	protected void ewait(String xpath){ 
