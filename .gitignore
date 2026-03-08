@@ -1,1 +1,12 @@
-/target/
+# Eclipse / Java
+.classpath
+.project
+.settings/
+
+# Maven / build
+target/
+bin/
+
+# Automation reports
+Reports/
+test-output/
