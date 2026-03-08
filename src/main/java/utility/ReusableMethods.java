@@ -12,6 +12,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.TimeoutException;
@@ -261,6 +262,22 @@ public class ReusableMethods {
 			getTest().log(LogStatus.FAIL, "Exception while clicking "+elementName+" is due to <br/>"+e);
 			new Assertion().fail();
 		}
+	}
+	
+	public boolean isDisplayed(String xpath) {
+		try {
+	        boolean displayed = driver.findElement(By.xpath(xpath)).isDisplayed();
+	        if (displayed) {
+	            getTest().log(LogStatus.INFO, "Displayed: " + xpath);
+	        }
+	        return displayed;
+	    } catch (NoSuchElementException e) {
+	        getTest().log(LogStatus.INFO, "Element not found: " + xpath);
+	        return false;
+	    } catch (Exception e) {
+	        getTest().log(LogStatus.ERROR, "Error checking display status of: " + xpath + " - " + e);
+	        return false;
+	    }
 	}
 
 	protected void verifyIsDisplayed(String xpath,String elementName){
