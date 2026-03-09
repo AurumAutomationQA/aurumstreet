@@ -19,9 +19,11 @@ import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriver;
@@ -342,5 +344,42 @@ public class ReusableMethods {
                 + now.format(DateTimeFormatter.ofPattern(", yyyy, h:mm:ss a"));
     }
 	
+	
+	
+	public String getResponse(String xpath) {
+		String message=null;
+		try {
+			WebElement toastInfo=driver.findElement(By.xpath(xpath));
+			message = toastInfo.getText();
+			getTest().log(LogStatus.INFO, "Toast message info: " + message);
+		}catch (Exception e) {
+			fail("Unable to fetch toast message info", e);
+		}
+		return message;
+	}
+	
+	
+	public void setCheckbox(String xpath, boolean shouldBeChecked, String fieldName) {
+	    try {
+	        WebElement checkbox = driver.findElement(By.xpath(xpath));
+
+	        boolean isChecked = checkbox.isSelected();
+
+	        if (shouldBeChecked && !isChecked) {
+	            ((JavascriptExecutor)driver).executeScript("arguments[0].click();", checkbox);
+	            getTest().log(LogStatus.INFO, fieldName + " checkbox checked");
+	        } 
+	        else if (!shouldBeChecked && isChecked) {
+	            ((JavascriptExecutor)driver).executeScript("arguments[0].click();", checkbox);
+	            getTest().log(LogStatus.INFO, fieldName + " checkbox unchecked");
+	        } 
+	        else {
+	            getTest().log(LogStatus.INFO, fieldName + " checkbox already in desired state");
+	        }
+
+	    } catch (Exception e) {
+	        getTest().log(LogStatus.FAIL, "Unable to handle checkbox: " + fieldName + addScreenShot());
+	    }
+	}
 
 }
