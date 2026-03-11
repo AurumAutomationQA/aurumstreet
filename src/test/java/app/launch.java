@@ -31,40 +31,9 @@ public class launch extends ReusableMethods
 	
 	@Test(priority=1)
 	public void launchTest() throws IOException, TimeoutException {
-		startTest("launch app");
-		
-		try {
-
-            UiAutomator2Options options = new UiAutomator2Options();
-
-            options.setPlatformName("Android");
-            options.setAutomationName("UiAutomator2");
-            options.setDeviceName("emulator-5554");
-
-            // Path to APK file
-            options.setApp("C:\\\\Users\\\\mahes\\\\Downloads\\\\aurum_staging_11_Mar.apk");
-
-            options.setAutoGrantPermissions(true);
-            options.setNoReset(true);
-            options.setNewCommandTimeout(Duration.ofMillis(300));
-
-            AndroidDriver driver = new AndroidDriver(
-                    new URL("http://127.0.0.1:4723"),
-                    options
-            );
-
-            System.out.println("App launched successfully!");
-
-            Thread.sleep(5000);
-
-            driver.quit();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-		
-		//launchApp();
-		//logScreenshot();
+		startTest("launch app");		
+		launchApp();
+		logScreenshot();
 		System.out.println("app launched successfully");
 	}
 	

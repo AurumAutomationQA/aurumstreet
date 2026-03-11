@@ -55,8 +55,7 @@ public class ReusableMethods {
 	static String htmlLocation 									 = null;                           
 	static ExtentReports reports 								 = null;
 	public static Properties prop             					 = new Properties();
-	Excel_Reader dataFile										 =new Excel_Reader("./src/main/java/testData/TestData.xlsx");
-
+	
 	
 	
 	
@@ -142,7 +141,7 @@ public class ReusableMethods {
             options.setNoReset(true);
             options.setNewCommandTimeout(Duration.ofMillis(300));
 
-            AndroidDriver driver = new AndroidDriver(
+            driver = new AndroidDriver(
                     new URL("http://127.0.0.1:4723"),
                     options
             );
@@ -151,8 +150,7 @@ public class ReusableMethods {
 
             Thread.sleep(5000);
 
-            driver.quit();
-
+            
         } catch (Exception e) {
             e.printStackTrace();
         }
