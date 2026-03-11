@@ -38,6 +38,12 @@ import com.relevantcodes.extentreports.ExtentReports;
 import com.relevantcodes.extentreports.ExtentTest;
 import com.relevantcodes.extentreports.LogStatus;
 
+import io.appium.java_client.android.options.UiAutomator2Options;
+
+import io.appium.java_client.android.AndroidDriver;
+import java.net.URL;
+
+
 public class ReusableMethods {
 	
 	public WebDriver driver;
@@ -49,8 +55,7 @@ public class ReusableMethods {
 	static String htmlLocation 									 = null;                           
 	static ExtentReports reports 								 = null;
 	public static Properties prop             					 = new Properties();
-	Excel_Reader dataFile										 =new Excel_Reader("./src/main/java/testData/TestData.xlsx");
-
+	
 	
 	
 	
@@ -117,6 +122,42 @@ public class ReusableMethods {
 		startReporter(reportLocation+htmlLocation);
 	}
 
+protected void launchApp() { 
+		
+		
+		try {
+
+            UiAutomator2Options options = new UiAutomator2Options();
+
+            options.setPlatformName("Android");
+            options.setAutomationName("UiAutomator2");
+            options.setDeviceName("emulator-5554");
+
+            // Path to APK file
+            options.setApp("C:\\\\Users\\\\mahes\\\\Downloads\\\\aurum_staging_11_Mar.apk");
+
+            options.setAutoGrantPermissions(true);
+            options.setNoReset(true);
+            options.setNewCommandTimeout(Duration.ofMillis(300));
+
+            driver = new AndroidDriver(
+                    new URL("http://127.0.0.1:4723"),
+                    options
+            );
+
+            System.out.println("App launched successfully!");
+
+            Thread.sleep(5000);
+
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+		
+		
+		
+		
+	}
 
 	
 	public void openBrowser(String browser, String URL) throws IOException, TimeoutException 
