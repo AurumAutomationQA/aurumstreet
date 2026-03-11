@@ -227,6 +227,18 @@ public class ReusableMethods {
 			new Assertion().fail();
 		}
 	}
+	
+	
+	protected void clickElement(String xpath,String elementName){
+		try {
+			ewait(xpath);
+			driver.findElement(By.xpath(xpath)).click();
+			getTest().log(LogStatus.INFO, "Cicked on "+elementName);
+		} catch (Exception e) {
+			getTest().log(LogStatus.FAIL, "Exception while clicking on "+elementName+" is due to <br/>"+e+addScreenShot());
+			new Assertion().fail();
+		}
+	}
 
 	protected void verifyTextDisplayed(String xpath,String text,String elementName){
 		try {
