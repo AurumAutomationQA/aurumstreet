@@ -3,6 +3,7 @@ package storeTests;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
 import org.openqa.selenium.By;
@@ -208,7 +209,7 @@ public class PriceProtection extends ReusableMethods
         logScreenshot();
     }
     
-    @Test(priority=5)
+    //@Test(priority=5)
     public void priceProtectionFormAllFields() {
     	startTest("Navigate to Price Protection form");
 
@@ -452,8 +453,188 @@ public class PriceProtection extends ReusableMethods
     }
     
     
+    @Test(priority=6)
+    public void fillFullFormWithTestData(Map<String, String> testData) {
+
+    	// Targets & Identifier
+
+    	clearNenterText("//input[@id='Plan Name']", "Automation Plan", "Plan Name");
+
+        selectDropdown("plan-branches", 1);
+
+        selectTenure("6");
+
+        selectStartDate();
+
+        selectEndDate();
+
+        selectDropdown("plan-metalCategory", 1);
+        selectDropdown("plan-metalType", 1);
+        selectDropdown("plan-category", 1);
+        selectDropdown("plan-subCategory", 1);
+        selectDropdown("plan-karat", 1);
+        selectDropdown("plan-demographics", 1);
+
+        // -------- Plan Applicable --------
+
+        selectRadio("net", "Weight Type Net");
+
+        clearNenterText("//input[@id='Min Weight (GM)']", "10", "Min Weight");
+
+        clearNenterText("//input[@id='Max Weight (GM)']", "50", "Max Weight");
+
+        selectRadio("flat", "Plan Fee Type");
+
+        clearNenterText("//input[@id='Protection Plan Fee (Flat ₹ or Per GM)']", "250", "Plan Fee");
+
+        clearNenterText("//input[@id='Protection Plan Fee Service Charge']", "50", "Service Charge");
+
+        // -------- Buy Back Offerings --------
+
+        clearNenterText("//input[@id='Protection Coverage (up to)/Gm - Difference Value']", "50", "Coverage");
+
+        clearNenterText("//input[@id='INSTANT PAY %']", "50", "Instant Pay");
+
+        clearNenterText("//input[@id='Pay On Next Purchase %']", "50", "Next Purchase Pay");
+
+        clearNenterText("//input[@id='Max Buy back Value/Gm']", "1000", "Max Buy Back");
+
+        clearNenterText("//input[@id='Waiting Period (Days)']", "15", "Waiting Period");
+
+        // -------- Next Purchase Offerings --------
+
+        clearNenterText("//input[@id='Protection Coverage balance on Next Purchase']", "50", "Coverage Next Purchase");
+
+        clearNenterText("//input[@id='Min Purchase Value']", "25000", "Min Purchase Value");
+
+        clearNenterText("//input[@id='Min Purchase Weight(Gm)']", "5", "Min Purchase Weight");
+
+        selectDropdown("benefits-validity", 1);
+
+        selectDropdown("next-purchase-category", 1);
+        selectDropdown("next-purchase-subCategory", 1);
+        selectDropdown("next-purchase-metalCategory", 1);
+        selectDropdown("next-purchase-metalType", 1);
+
+        // -------- Benefit Packs --------
+
+        clearNenterText("//input[@id='Discount in % on VA/Making Charges']", "10", "Discount");
+
+        clearNenterText("//input[@id='Min Buy Value']", "50000", "Min Buy Value");
+
+        clearNenterText("//input[@id='Min Buy Weight (Gm)']", "10", "Min Buy Weight");
+
+        selectDropdown("renewal-validity", 1);
+
+        selectRadio("false", "Price Protection Mandatory");
+
+        // -------- Maintenance --------
+
+        selectRadio("limited", "Maintenance Type");
+
+        clearNenterText("//input[@id='Maintenance Period (Months)']", "12", "Maintenance Period");
+
+        selectDropdown("noOfServices", 1);
+
+        setCheckboxByLabel("Service Charge Applicable", true);
+
+        clearNenterText("//input[@id='Service Charges (%)']", "5", "Service Charges");
+
+        setCheckboxByLabel("Free Maintenance & Service For This Product", true);
+
+        // -------- Next Purchase Additional --------
+
+        selectRadio("flat", "Offer Type");
+
+        selectRadio("flat", "Making Charge Type");
+
+        clearNenterText("//input[@id='Offer on VA ₹']", "2500", "Offer VA");
+
+        clearNenterText("//input[@id='Offer on Making Charges ₹']", "3500", "Offer MC");
+
+        selectDropdown("additional-offers-validity", 1);
+
+        // -------- Additional Info --------
+
+        clearNenterText("//textarea[@id='Description']", "Automation Plan Description", "Description");
+
+        setCheckboxByLabel("Monthly Risk Limit", true);
+
+        clearNenterText("//input[@id='Max Risk Amount']", "100000", "Max Risk");
+
+        // -------- Submit --------
+
+        clickElement("//button[normalize-space()='Create Plan']", "Create Plan");
+    }
+    
+    
     @AfterClass
     public void tearDown() {
         closeDriver();
     }
+    
+    
+    public void selectDropdown(String id, int index) {
+        clickElement("//input[@id='" + id + "']", "Open Dropdown : " + id);
+        clickElement("(//div[contains(@class,'react-select__option')])[" + index + "]", "Select option from " + id);
+    }
+
+    public void selectRadio(String value, String name) {
+        clickElement("//input[@type='radio' and @value='" + value + "']", name);
+    }
+
+    public void setCheckboxByLabel(String label, boolean value) {
+        String xpath = "//label[normalize-space(text())='" + label + "']/ancestor::div[contains(@class,'Checkbox')]//input";
+        setCheckbox(xpath, value, label);
+    }
+    
+    WebDriverWait wait=new WebDriverWait(driver, Duration.ofSeconds(10));
+    public void selectTenure(String months) {
+
+        WebElement tenure = wait.until(
+                ExpectedConditions.elementToBeClickable(
+                        By.xpath("//input[contains(@id,'plan-tenure')]")));
+
+        tenure.click();
+        tenure.sendKeys(months);
+        tenure.sendKeys(Keys.ENTER);
+    }
+
+    // ---------- Date Picker ----------
+
+    public void selectStartDate() {
+
+        LocalDate tomorrow = LocalDate.now().plusDays(1);
+        String day = String.valueOf(tomorrow.getDayOfMonth());
+
+        WebElement startDate = wait.until(
+                ExpectedConditions.elementToBeClickable(
+                        By.xpath("//input[contains(@id,'plan-start')]")));
+
+        startDate.click();
+
+        wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//div[contains(@class,'react-datepicker__day') and text()='" + day + "']")))
+                .click();
+    }
+
+    public void selectEndDate() {
+
+        LocalDate nextMonth = LocalDate.now().plusMonths(1);
+        String day = String.valueOf(nextMonth.getDayOfMonth());
+
+        WebElement endDate = wait.until(
+                ExpectedConditions.elementToBeClickable(
+                        By.xpath("//input[contains(@id,'plan-end')]")));
+
+        endDate.click();
+
+        wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//button[contains(@class,'react-datepicker__navigation--next')]"))).click();
+
+        wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//div[contains(@class,'react-datepicker__day') and text()='" + day + "']")))
+                .click();
+    }
+
 }
