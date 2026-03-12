@@ -91,7 +91,7 @@ public class PriceProtection extends ReusableMethods
         WebElement branchInput = driver.findElement(By.xpath("//input[@id='plan-branches']")); 
         branchInput.sendKeys("All"); 
         branchInput.sendKeys(Keys.ENTER); 
-        getTest().log(com.relevantcodes.extentreports.LogStatus.INFO, "Selected branch 'All'");
+        getTest().log(LogStatus.INFO, "Selected branch 'All'");
 
         // Plan Code
         clearNenterText("//input[@placeholder='Enter plan code']", "AUTO123", "Plan Code");
@@ -107,7 +107,7 @@ public class PriceProtection extends ReusableMethods
         
         tenureInput.sendKeys("6"); 
         tenureInput.sendKeys(Keys.ENTER);
-        getTest().log(com.relevantcodes.extentreports.LogStatus.INFO, "Selected tenure '6'");
+        getTest().log(LogStatus.INFO, "Selected tenure '6'");
 
         // Date Handling
         // Get tomorrow date
@@ -170,7 +170,7 @@ public class PriceProtection extends ReusableMethods
         try {
 			click("//button[normalize-space()='Create Plan']", "Click Create Plan button");
 		} catch (Exception e) {
-			getTest().log(com.relevantcodes.extentreports.LogStatus.FAIL, "In the Price Proctection plan form, unable to click submit button" + addScreenShot());
+			getTest().log(LogStatus.FAIL, "In the Price Proctection plan form, unable to click submit button" + addScreenShot());
 		}
 
         // ----------------------
@@ -180,25 +180,25 @@ public class PriceProtection extends ReusableMethods
             wait = new WebDriverWait(driver, Duration.ofSeconds(10));
             WebElement confirmBtn = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//button[contains(text(),'Confirm')]")));
             ((JavascriptExecutor)driver).executeScript("arguments[0].click();", confirmBtn);
-            getTest().log(com.relevantcodes.extentreports.LogStatus.INFO, "In the Price Proctection plan form, in the process of submitting the form, confirmation popup accepted");
+            getTest().log(LogStatus.INFO, "In the Price Proctection plan form, in the process of submitting the form, confirmation popup accepted");
             try {
                 wait = new WebDriverWait(driver, Duration.ofSeconds(30));
                 String toastXpath = "//div[contains(@class,'Toastify')]//div[contains(@class,'toast-icon')]/..//span";
                 wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(toastXpath)));
                 String toastResponse = getResponse(toastXpath);
                 if (toastResponse.contains("Plan created successfully") || toastResponse.contains("Plan updated successfully")) {
-                    getTest().log(com.relevantcodes.extentreports.LogStatus.PASS, "Price Protection Plan creation flow successful with toast message: " + toastResponse);
+                    getTest().log(LogStatus.PASS, "Price Protection Plan creation flow successful with toast message: " + toastResponse);
                 } 
                 else {
                     // Log failure without taking an extra screenshot here; rely on final logScreenshot()
-                    getTest().log(com.relevantcodes.extentreports.LogStatus.FAIL, "Price Protection Plan creation flow failed with unexpected toast message: " + toastResponse);
+                    getTest().log(LogStatus.FAIL, "Price Protection Plan creation flow failed with unexpected toast message: " + toastResponse);
                 }
             } catch (Exception e) {
                 // Log failure without taking an extra screenshot here; rely on final logScreenshot()
-                getTest().log(com.relevantcodes.extentreports.LogStatus.FAIL, "In the Price Proctection plan form, in the process of submitting the form, Toast message not displayed or not captured: " + e + addScreenShot());
+                getTest().log(LogStatus.FAIL, "In the Price Proctection plan form, in the process of submitting the form, Toast message not displayed or not captured: " + e + addScreenShot());
             }
         } catch (Exception e) {
-            getTest().log(com.relevantcodes.extentreports.LogStatus.INFO, "In the Price Proctection plan form, in the process of submitting the form, No confirmation popup found or click functionality is not working: " + e);
+            getTest().log(LogStatus.INFO, "In the Price Proctection plan form, in the process of submitting the form, No confirmation popup found or click functionality is not working: " + e);
         }
 
         // ----------------------
