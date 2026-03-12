@@ -132,9 +132,10 @@ protected void launchApp() {
             options.setPlatformName("Android");
             options.setAutomationName("UiAutomator2");
             options.setDeviceName("emulator-5554");
-
+            
             // Path to APK file
-            options.setApp("C:\\\\Users\\\\mahes\\\\Downloads\\\\aurum_staging_11_Mar.apk");
+            String apkLocation=System.getProperty("user.dir") +"/Downloads/aurum_staging_11_Mar.apk";
+            options.setApp(apkLocation);
 
             options.setAutoGrantPermissions(true);
             options.setNoReset(true);

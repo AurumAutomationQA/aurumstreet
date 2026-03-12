@@ -1,17 +1,12 @@
 package app;
 
 import java.io.IOException;
-import java.net.URL;
-import java.time.Duration;
 import java.util.concurrent.TimeoutException;
 
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import io.appium.java_client.android.AndroidDriver;
-import io.appium.java_client.android.options.UiAutomator2Options;
 import utility.ReusableMethods;
 
 public class launch extends ReusableMethods
