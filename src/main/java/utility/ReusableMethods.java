@@ -376,5 +376,39 @@ public class ReusableMethods {
 	        getTest().log(LogStatus.FAIL, "Unable to handle checkbox: " + fieldName + addScreenShot());
 	    }
 	}
+	
+	
+	public String randomPhoneNumber()
+	{
+		long rNum=System.currentTimeMillis();
+		String randomNum=String.valueOf(rNum);
+		randomNum=randomNum.substring(2, 10);
+		String phoneNumber="98"+randomNum;
+		int i=1;
+	    while(phoneNumber.length()<10)
+	    {
+	    	rNum=System.currentTimeMillis();
+	    	randomNum=String.valueOf(rNum);
+	    	randomNum=randomNum.substring(2, 10);
+			phoneNumber="98"+randomNum;
+	    	if(i==5)
+	    	{
+	    		break;
+	    	}
+	    	i++;
+	    }
+		return phoneNumber;
+	}
+	
+	
+	public String randomEmail()
+	{
+	    long rNum = System.currentTimeMillis();
+	    String randomNum = String.valueOf(rNum);
+
+	    String email = "test" + randomNum + "@mail.com";
+
+	    return email;
+	}
 
 }
