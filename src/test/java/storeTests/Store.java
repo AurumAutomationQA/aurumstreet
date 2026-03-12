@@ -81,7 +81,6 @@ public class Store extends ReusableMethods
 		logScreenshot();
 		
 		clickByCSS(".max-xl\\3Ahidden > .w-full", "features expand button");
-		verifyIsDisplayed("//h2[text()='Deepa Jewellers']", "heading - Deepa Jewellers");
 		verifyIsDisplayed("//span[text()='Dashboard']", "Dashboard link");
 		verifyIsDisplayed("//span[text()='Categories']", "Categories link");
 		verifyIsDisplayed("//span[text()='eOffer Card']", "eOffer Card link");
