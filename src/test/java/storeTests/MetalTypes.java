@@ -56,8 +56,8 @@ public class MetalTypes extends ReusableMethods
     }
     
     @Test(priority=3)
-    public void priceProtectionTest() {
-        startTest("Navigate to Price Protection");
+    public void metalPricesTest() {
+        startTest("Navigate to Metal Prices page");
         click("//span[text()='Dashboard']/..", "dashboard button");
         click("//a[@href=\"/admin/goldPricesList\"]", "Metal Prices link");
         verifyIsDisplayed("//h3[text()='Metal Prices']", "Metal Prices heading");
@@ -164,7 +164,7 @@ public class MetalTypes extends ReusableMethods
     
     @Test(priority=6)
     public void metalPricesGoldFormSubmission() {
-    	startTest("Verify Gold metal form submission in Metal Prices form");
+    	startTest("Gold metal form submission in Metal Prices form");
     	WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
     	WebElement metalInput = driver.findElement(By.xpath("(//span[normalize-space(text())='Metal'])[last()]/ancestor::div[contains(@class,'rounded-md')]//input"));
     	metalInput.sendKeys("Gold");
@@ -209,7 +209,7 @@ public class MetalTypes extends ReusableMethods
     
     @Test(priority=7)
     public void metalPricesSilverFormSubmission() {
-    	startTest("Verify Silver metal form submission in Metal Prices form");
+    	startTest("Silver metal form submission in Metal Prices form");
     	click("//button[contains(text(),'Update Prices') ]", "Update Prices button");
     	WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
     	WebElement metalInput = driver.findElement(By.xpath("(//span[normalize-space(text())='Metal'])[last()]/ancestor::div[contains(@class,'rounded-md')]//input"));
@@ -223,9 +223,7 @@ public class MetalTypes extends ReusableMethods
     	enterValue("95.8% Silver", "280000");
     	
     	try {
-
-    	    WebElement submitBtn = wait.until(ExpectedConditions.elementToBeClickable(
-    	            By.xpath("//button[normalize-space()='Submit']")));
+    	    WebElement submitBtn = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[normalize-space()='Submit']")));
     	    submitBtn.click();
     	    getTest().log(LogStatus.PASS, "Clicked Submit button");
     	} catch (Exception e) {
@@ -252,8 +250,7 @@ public class MetalTypes extends ReusableMethods
     
     public void enterValue(String karat, String value) {
         try {
-            WebElement input = driver.findElement(By.xpath(
-                    "//label[contains(normalize-space(),'" + karat + "')]/ancestor::div[contains(@class,'input')]//input"));
+            WebElement input = driver.findElement(By.xpath("//label[contains(normalize-space(),'" + karat + "')]/ancestor::div[contains(@class,'input')]//input"));
             input.clear();
             input.sendKeys(value);
             getTest().log(LogStatus.PASS, karat + " value entered : " + value);

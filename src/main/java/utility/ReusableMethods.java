@@ -5,8 +5,6 @@ import static org.testng.Assert.fail;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -32,7 +30,6 @@ import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.asserts.Assertion;
@@ -40,9 +37,6 @@ import org.testng.asserts.Assertion;
 import com.relevantcodes.extentreports.ExtentReports;
 import com.relevantcodes.extentreports.ExtentTest;
 import com.relevantcodes.extentreports.LogStatus;
-
-import io.appium.java_client.android.AndroidDriver;
-import io.appium.java_client.android.options.UiAutomator2Options;
 
 public class ReusableMethods {
 	
@@ -121,61 +115,6 @@ public class ReusableMethods {
 		}
 		initializeReportLocation(reportLocation);
 		startReporter(reportLocation+htmlLocation);
-	}
-	
-	
-	protected void launchApp() { 
-		
-		
-		try {
-
-            UiAutomator2Options options = new UiAutomator2Options();
-
-            options.setPlatformName("Android");
-            options.setAutomationName("UiAutomator2");
-            options.setDeviceName("emulator-5554");
-
-            // Path to APK file
-            options.setApp("C:\\\\Users\\\\mahes\\\\Downloads\\\\aurum_staging_11_Mar.apk");
-
-            options.setAutoGrantPermissions(true);
-            options.setNoReset(true);
-            options.setNewCommandTimeout(Duration.ofMillis(300));
-
-            AndroidDriver driver = new AndroidDriver(
-                    new URL("http://127.0.0.1:4723"),
-                    options
-            );
-
-            System.out.println("App launched successfully!");
-
-            Thread.sleep(5000);
-
-            driver.quit();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-		
-		
-		
-		
-		
-		/*
-		 * DesiredCapabilities dc=new DesiredCapabilities();
-		 * dc.setCapability("automationName", "UiAutomator2");
-		 * dc.setCapability(MobileCapabilityType.PLATFORM_NAME, "Android");
-		 * dc.setCapability(MobileCapabilityType.DEVICE_NAME, "Android");
-		 * dc.setCapability("appPackage", "com.orgname.OnlineBanking");
-		 * dc.setCapability("appActivity", "com.orgname.OnlineBanking.OnlineBanking");
-		 * dc.setCapability("noReset", true); dc.setCapability("fullReset", false);
-		 * 
-		 * URL url; try { url = new URL("http://127.0.0.1:4723/wd/hub"); driver=new
-		 * AndroidDriver<WebElement>(url,dc); } catch (MalformedURLException e1) {
-		 * e1.printStackTrace(); }
-		 * 
-		 * logInfo("Invoked app successfully");
-		 */
 	}
 
 
