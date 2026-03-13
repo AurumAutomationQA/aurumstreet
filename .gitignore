@@ -8,7 +8,6 @@ target/
 bin/
 
 # Automation reports
-Reports/
 test-output/
 
 # Downloads
