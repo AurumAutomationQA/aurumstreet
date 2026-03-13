@@ -12,6 +12,7 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -26,6 +27,12 @@ public class PriceProtection extends ReusableMethods
     public void prerequisites() {
         initialise();
     }
+    
+    @AfterClass
+    public void quitDriver() {
+        driver.quit();
+    }
+
 
     @AfterMethod
     public void afterTest() {
