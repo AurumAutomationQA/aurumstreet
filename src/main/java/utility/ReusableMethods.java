@@ -5,6 +5,7 @@ import static org.testng.Assert.fail;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -32,21 +33,25 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.annotations.AfterSuite;
 import org.testng.asserts.Assertion;
 
 import com.relevantcodes.extentreports.ExtentReports;
 import com.relevantcodes.extentreports.ExtentTest;
 import com.relevantcodes.extentreports.LogStatus;
 
-import io.appium.java_client.android.options.UiAutomator2Options;
-
 import io.appium.java_client.android.AndroidDriver;
-import java.net.URL;
+import io.appium.java_client.android.options.UiAutomator2Options;
+import io.appium.java_client.service.local.AppiumDriverLocalService;
+import io.appium.java_client.service.local.AppiumServiceBuilder;
 
 
 public class ReusableMethods {
 	
 	public WebDriver driver;
+	public WebDriver webDriver;
+	public WebDriver androidDriver;
+    
 	static Map<Integer,ExtentTest> extentTestMap				 = new HashMap<Integer,ExtentTest>();
 	static Map<Integer,ExtentTest> extentParentMap 				 = new HashMap<Integer,ExtentTest>();
 	static Map<Integer,ExtentReports> extentreportsMap			 = new HashMap<Integer,ExtentReports>();
@@ -55,10 +60,12 @@ public class ReusableMethods {
 	static String htmlLocation 									 = null;                           
 	static ExtentReports reports 								 = null;
 	public static Properties prop             					 = new Properties();
-	
-	
-	
-	
+	protected static AppiumDriverLocalService service=null;
+	protected static String localHost="127.0.0.1";
+	protected static int localPort=4723;
+	protected static String localHostURL="http://127.0.0.1:4723";
+	protected static String apkName="aurum_staging_11_Mar.apk";
+	protected static String appPath = System.getProperty("user.dir") + File.separator + "Downloads" + File.separator + apkName;
 	
 	public synchronized static void initializeReportLocation(String reportlocation) {
 		reportLocationMap.put((int) (long) (Thread.currentThread().getId()), reportlocation);
@@ -102,132 +109,157 @@ public class ReusableMethods {
 	public void logScreenshot(){
 		getTest().log(LogStatus.INFO,  addScreenShot());	
 	}
+	
+	
+	@AfterSuite
+    public void stopAllDrivers() {
 
-	protected static synchronized void initialise() 
-	{		
-		File file 			 = new File("./src/main/java/testData/testData.properties");
-		try {
-			FileInputStream fileInput            = new FileInputStream(file);
-			prop.load(fileInput);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		if(reportLocation==null && htmlLocation==null && reports==null)
-		{
-			reportLocation 			= System.getProperty("user.dir") + "/Reports/Automation_"+new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(new Date())+"/";	
-			htmlLocation 			= "Automation_"+new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss'.html'").format(new Date());                           				
-			reports 				= new ExtentReports(reportLocation+htmlLocation,false);
-		}
-		initializeReportLocation(reportLocation);
+        quitAllDrivers();
+
+    }
+
+	protected static synchronized void initialise() {
+
+        try {
+
+            File file = new File("./src/main/java/testData/testData.properties");
+
+            FileInputStream fileInput = new FileInputStream(file);
+
+            prop.load(fileInput);
+
+        } catch (IOException e) {
+
+            e.printStackTrace();
+        }
+
+        if (reportLocation==null && htmlLocation==null && reports==null) {
+
+            reportLocation = System.getProperty("user.dir")+ "/Reports/Automation_"+ new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(new Date())+ "/";
+
+            htmlLocation = "Automation_"+ new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss'.html'").format(new Date());
+
+            reports = new ExtentReports(reportLocation + htmlLocation, false);
+        }
+        initializeReportLocation(reportLocation);
 		startReporter(reportLocation+htmlLocation);
-	}
+    }
+	
+    
+    public static void startAppiumService() {
 
-protected void launchApp() { 
-		
-		
-		try {
+        if (service == null) {
+            String appiumHome = System.getenv("APPDATA") + File.separator + "npm";
+
+            File mainJS = new File(appiumHome+ File.separator + "node_modules"+ File.separator + "appium"+ File.separator + "build"+ File.separator + "lib"+ File.separator + "main.js");
+
+            service = new AppiumServiceBuilder()
+                    .withAppiumJS(mainJS)
+                    .withIPAddress(localHost)
+                    .usingPort(localPort)
+                    .build();
+            service.start();
+
+            System.out.println("Appium Server Started");
+        }
+    }
+    
+    
+    public void launchApp() {
+
+    	try {
+
+            startAppiumService();
 
             UiAutomator2Options options = new UiAutomator2Options();
 
             options.setPlatformName("Android");
             options.setAutomationName("UiAutomator2");
-            options.setDeviceName("emulator-5554");
-            
-            // Path to APK file
-            String apkLocation=System.getProperty("user.dir") +"/Downloads/aurum_staging_11_Mar.apk";
-            options.setApp(apkLocation);
+
+            options.setApp(appPath);
 
             options.setAutoGrantPermissions(true);
-            options.setNoReset(true);
-            options.setNewCommandTimeout(Duration.ofMillis(300));
+            options.setNoReset(false);
+            options.setFullReset(false);
 
-            driver = new AndroidDriver(
-                    new URL("http://127.0.0.1:4723"),
-                    options
-            );
+            driver = new AndroidDriver(new URL("http://" + localHost + ":" + localPort),options);
+            androidDriver=driver;
 
-            System.out.println("App launched successfully!");
+            driver.manage().timeouts()
+                    .implicitlyWait(Duration.ofSeconds(10));
 
-            Thread.sleep(5000);
+            if (driver != null) {
+                System.out.println("App launched successfully");
+            } else {
+                throw new RuntimeException("Driver session not created");
+            }
 
-            
         } catch (Exception e) {
-            e.printStackTrace();
+
+            throw new RuntimeException("Failed to launch app", e);
         }
-		
-		
-		
-		
-	}
+    	logInfo("App Launched Successfully");
 
+    }
+    
+    
+    public void openBrowser(String browser, String URL) throws IOException, TimeoutException {
+
+        if (driver == null) {
+
+        	switch (browser.toLowerCase().trim()) {
+    		case "chrome": {
+    			ChromeOptions options = new ChromeOptions();
+    			options.addArguments("--disable-notifications");
+    			driver = new ChromeDriver(options);
+    			webDriver=driver;
+    			driver.manage().window().maximize();
+				getTest().log(LogStatus.INFO,"Opened chrome Browser Successfully and navigated to url : </br>" + URL);
+				 
+    		}
+    			break;
+    		case "firefox": {
+    			FirefoxOptions options = new FirefoxOptions();
+    			options.addArguments("--window-size=1400,900");
+    			options.addArguments("--headless");
+    			options.addArguments("--disable-notifications");
+    			driver = new FirefoxDriver(options);
+    			webDriver=driver;
+				getTest().log(LogStatus.INFO,"Opened FireFox Browser Successfully and navigated to url : </br>" + URL);
+				 
+    		}
+    			break;
+
+    		case "edge": {
+    			EdgeOptions options = new EdgeOptions();
+    			options.addArguments("--window-size=1400,900");
+    			options.addArguments("--headless");
+    			options.addArguments("--disable-notifications");
+    			driver = new EdgeDriver(options);
+    			webDriver=driver;
+				getTest().log(LogStatus.INFO,"Opened Edge Browser Successfully and navigated to url : </br>" + URL);
+				 
+    		}
+    			break;
+
+    		default:
+    			ChromeOptions options = new ChromeOptions();
+    			options.addArguments("--window-size=1400,900");
+    			options.addArguments("--headless");
+    			options.addArguments("--disable-notifications");
+    			driver = new ChromeDriver(options);
+    			webDriver=driver;
+				getTest().log(LogStatus.INFO,"Opened Chrome Browser Successfully and navigated to url : </br>" + URL);
+				 
+    			break;
+    		}
+            driver.manage().window().maximize();
+
+            driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+        }
+        driver.get(URL);
+    }
 	
-	public void openBrowser(String browser, String URL) throws IOException, TimeoutException 
-	{
-		switch (browser.toLowerCase().trim()) {
-		case "chrome": {
-			ChromeOptions options = new ChromeOptions();
-			options.addArguments("--disable-notifications");
-			driver = new ChromeDriver(options);
-			driver.manage().window().maximize();
-			getTest().log(LogStatus.INFO,
-	    			  "Opened chrome Browser Successfully and navigated to url : </br>" + URL);
-		}
-			break;
-		case "firefox": {
-			FirefoxOptions options = new FirefoxOptions();
-			options.addArguments("--window-size=1400,900");
-			options.addArguments("--headless");
-			options.addArguments("--disable-notifications");
-			driver = new FirefoxDriver(options);
-			getTest().log(LogStatus.INFO,
-	    			  "Opened FireFox Browser Successfully and navigated to url : </br>" + URL);
-		}
-			break;
-		case "headless": {
-			ChromeOptions options = new ChromeOptions();
-			options.addArguments("--headless");
-			options.addArguments("--disable-notifications");
-			options.addArguments("start-maximized");
-			driver = new ChromeDriver(options);
-			getTest().log(LogStatus.INFO,
-	    			  "Opened Headless Browser Successfully and navigated to url : </br>" + URL);
-		}
-			break;
-
-		case "edge": {
-			EdgeOptions options = new EdgeOptions();
-			options.addArguments("--window-size=1400,900");
-			options.addArguments("--headless");
-			options.addArguments("--disable-notifications");
-			driver = new EdgeDriver(options);
-			getTest().log(LogStatus.INFO,
-	    			  "Opened Edge Browser Successfully and navigated to url : </br>" + URL);
-		}
-			break;
-
-		default:
-			ChromeOptions options = new ChromeOptions();
-			options.addArguments("--window-size=1400,900");
-			options.addArguments("--headless");
-			options.addArguments("--disable-notifications");
-			driver = new ChromeDriver(options);
-			getTest().log(LogStatus.INFO,
-	    			  "Opened Chrome Browser Successfully and navigated to url : </br>" + URL);
-			break;
-		}
-		try {
-			driver.manage().timeouts().pageLoadTimeout(Duration.ofMinutes(1));
-			try {
-				driver.get(URL);
-			} catch (Exception e) {
-				fail("Unable to open the browser", e);
-			}
-		} catch (Exception e) {
-			fail("server down", e);
-		}
-		driver.manage().window().maximize();
-		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
-	}
 	
 	protected void ewait(String xpath){ 
 		  new WebDriverWait(driver,Duration.ofSeconds(30)).until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpath))); 
@@ -237,13 +269,6 @@ protected void launchApp() {
 	protected void clearNenterText(String xpath,String text,String elementName){
 		try {
 			ewait(xpath);
-			/*WebElement element=driver.findElement(By.xpath(xpath));
-			
-			 * JavascriptExecutor executor = (JavascriptExecutor)driver; executor.
-			 * executeScript("arguments[0].setAttribute('style','border: 2px solid Gold;');"
-			 * , element); Thread.sleep(1000);
-			 * executor.executeScript("arguments[0].removeAttribute('style');");
-			 */
 			driver.findElement(By.xpath(xpath)).clear();
 			driver.findElement(By.xpath(xpath)).sendKeys(text);
 			getTest().log(LogStatus.INFO, "Cleared and entered text in "+elementName);
@@ -253,17 +278,6 @@ protected void launchApp() {
 		}
 	}
 	
-	
-	protected void clickElement(String xpath,String elementName){
-		try {
-			ewait(xpath);
-			driver.findElement(By.xpath(xpath)).click();
-			getTest().log(LogStatus.INFO, "Cicked on "+elementName);
-		} catch (Exception e) {
-			getTest().log(LogStatus.FAIL, "Exception while clicking on "+elementName+" is due to <br/>"+e+addScreenShot());
-			new Assertion().fail();
-		}
-	}
 
 	protected void verifyTextDisplayed(String xpath,String text,String elementName){
 		try {
@@ -294,7 +308,6 @@ protected void launchApp() {
 
 	protected void clickByCSS(String css,String elementName){
 		try {
-			
 			driver.findElement(By.cssSelector(css)).click();
 			getTest().log(LogStatus.INFO, "clicked "+elementName);
 		} catch (Exception e) {
@@ -330,32 +343,45 @@ protected void launchApp() {
 		}
 	}
 	
-	
-	
-	
-	protected String tearDown(WebDriver driver)	
-	{
-		try
-		{
-			UUID uuid = UUID.randomUUID();
-			File scrFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
-			FileUtils.copyFile(scrFile, new File(getreportlocation()+uuid+".png"));
-			getTest().addScreenCapture(getreportlocation()+uuid+".png");
-			return uuid+".png";
-		} 
-		catch (IOException e)
-		{	
-			System.out.println("Error while generating screenshot:\n" + e.toString());
-			return "";
-		}
+	protected String tearDown() {
+
+	    try {
+
+	        UUID uuid = UUID.randomUUID();
+
+	        File scrFile = ((TakesScreenshot) driver)
+	                .getScreenshotAs(OutputType.FILE);
+
+	        File dest = new File(getreportlocation() + uuid + ".png");
+
+	        FileUtils.copyFile(scrFile, dest);
+
+	        return dest.getAbsolutePath();
+
+	    } catch (Exception e) {
+
+	        System.out.println("Error while generating screenshot:\n" + e);
+
+	        return "";
+	    }
 	}
 	
 	public String addScreenShot(){
-		return getTest().addScreenCapture(tearDown(driver));
+
+	    if(driver != null){
+
+	        return getTest().addScreenCapture(tearDown());
+
+	    }
+
+	    return "";
 	}
 
 	public void closeDriver(){
-		driver.quit();
+	    if(driver != null){
+	        driver.quit();
+	        driver = null;
+	    }
 	}
 
 	public static String getFormattedDateTime() {
@@ -453,4 +479,27 @@ protected void launchApp() {
 	    return email;
 	}
 
+	
+	public void quitAllDrivers() {
+
+        if (driver != null) {
+            driver.quit();
+            driver = null;
+        }
+        
+        if (service != null) {
+            service.stop();
+            service = null;
+        }
+    }
+	
+	
+	protected void switchToWebDriver() {
+		driver = webDriver;
+	}
+	
+	protected void switchToAndroidDriver() {
+		driver = androidDriver;
+	}
+	
 }

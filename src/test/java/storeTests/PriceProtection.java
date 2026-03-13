@@ -12,7 +12,6 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -564,23 +563,18 @@ public class PriceProtection extends ReusableMethods
 
         // -------- Submit --------
 
-        clickElement("//button[normalize-space()='Create Plan']", "Create Plan");
+        click("//button[normalize-space()='Create Plan']", "Create Plan");
     }
-    
-    
-    @AfterClass
-    public void tearDown() {
-        closeDriver();
-    }
+       
     
     
     public void selectDropdown(String id, int index) {
-        clickElement("//input[@id='" + id + "']", "Open Dropdown : " + id);
-        clickElement("(//div[contains(@class,'react-select__option')])[" + index + "]", "Select option from " + id);
+    	click("//input[@id='" + id + "']", "Open Dropdown : " + id);
+    	click("(//div[contains(@class,'react-select__option')])[" + index + "]", "Select option from " + id);
     }
 
     public void selectRadio(String value, String name) {
-        clickElement("//input[@type='radio' and @value='" + value + "']", name);
+    	click("//input[@type='radio' and @value='" + value + "']", name);
     }
 
     public void setCheckboxByLabel(String label, boolean value) {
