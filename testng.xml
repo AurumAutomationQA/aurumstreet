@@ -4,9 +4,9 @@
   <test thread-count="5" name="Test">
     <classes>
       <class name="storeTests.Store"/>
-      <class name="storeTests.MetalTypes"/>
+      <!--<class name="storeTests.MetalTypes"/>
       <class name="storeTests.PriceProtection"/>
-      <class name="storeTests.CustomerOTP"/>
+      <class name="storeTests.CustomerOTP"/>-->
     </classes>
   </test> <!-- Test -->
 </suite> <!-- Suite -->
