@@ -9,6 +9,7 @@ bin/
 
 # Automation reports
 test-output/
+Reports/
 
 # Downloads
 Downloads/

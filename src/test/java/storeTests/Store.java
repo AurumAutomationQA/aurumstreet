@@ -3,6 +3,7 @@ package storeTests;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -18,7 +19,11 @@ public class Store extends ReusableMethods
 		
 	}
 	
-	
+    @AfterClass
+    public void quitDriver() {
+        driver.quit();
+    }
+
 	@AfterMethod
 	public void afterTest() {
 		endTest();
