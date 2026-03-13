@@ -33,9 +33,8 @@ public class launch extends ReusableMethods
 	}
 	
 	
-	//@AfterClass
-	public void tearDown() {
-		closeDriver();
-	}
+	/*
+	 * //@AfterClass public void tearDown() { closeDriver(); }
+	 */
 
 }
