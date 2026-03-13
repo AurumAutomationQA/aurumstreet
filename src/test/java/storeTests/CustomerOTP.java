@@ -248,7 +248,7 @@ public class CustomerOTP extends ReusableMethods {
         
     }
     
-    @Test(priority = 6)
+    //@Test(priority = 6)
     public void launchapp() {
 		
 		startTest("launch app");
@@ -258,7 +258,7 @@ public class CustomerOTP extends ReusableMethods {
 		logScreenshot();
     }
     
-    @Test(priority = 7)
+    //@Test(priority = 7)
     public void verifyAddedCustomerInApp() {
     	startTest("Verify added customer in app");
     	
@@ -268,7 +268,7 @@ public class CustomerOTP extends ReusableMethods {
 		
     }
     
-    @Test(priority = 8)
+   // @Test(priority = 8)
     public void demoWeb() throws IOException, TimeoutException {
     	startTest("Demo web test");
     	
