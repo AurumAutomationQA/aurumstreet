@@ -346,6 +346,27 @@ public class ReusableMethods {
 		}
 	}
 
+	protected void check(String xpath,String elementName){
+		try {
+			if (!driver.findElement(By.xpath(xpath)).isSelected()) {
+				ewait(xpath);
+				driver.findElement(By.xpath(xpath)).click();
+				getTest().log(LogStatus.INFO, "Checked " + elementName);
+			}
+		} catch (Exception e) {
+			getTest().log(LogStatus.FAIL, "Exception while checking "+elementName+" is due to <br/>"+e);
+			new Assertion().fail();
+		}
+	}
+
+	protected void sleep(int seconds){
+		try {
+			Thread.sleep(seconds*1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
 	protected void clickByCSS(String css,String elementName){
 		try {
 			Thread.sleep(2000);

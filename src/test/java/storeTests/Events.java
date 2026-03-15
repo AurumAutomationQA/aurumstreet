@@ -116,7 +116,7 @@ public class Events extends ReusableMethods {
         verifyIsDisplayed("//span[text()='Description']/..//span[text()='*']", "Mandatory - Description");
         verifyIsDisplayed("//textarea[@id='Description']", "Description textarea");
         verifyIsEnabled("//textarea[@id='Description']", "Description textarea");
-        verifyIsDisplayed("//textarea[@placeholder='Enter description']", "Placeholder - Description");
+        verifyIsDisplayed("//textarea[@placeholder='Enter description']", "Placeholder - Enter description");
         
         
         // Start Date & Time
@@ -146,7 +146,7 @@ public class Events extends ReusableMethods {
         // Mobile
         verifyIsDisplayed("//span[text()='Mobile Number']", "Label - Mobile Number");
         verifyIsDisplayed("//span[text()='(optional)']", "Label - (optional)");
-        verifyIsDisplayed("//span[text()='Mobile Number']/../..//span[text()='(optional)']", "contry code +91");
+        verifyIsDisplayed("//span[text()='Mobile Number']/../..//button[text()='+91']", "contry code +91");
         verifyIsDisplayed("//input[@id='Mobile Number']", "Mobile Number input");
         verifyIsEnabled("//input[@id='Mobile Number']", "Mobile Number input");
         verifyIsDisplayed("//span[text()='Mobile Number']/../..//input[@placeholder='9999988888']", "Placeholder for mobile number - 9999988888");
