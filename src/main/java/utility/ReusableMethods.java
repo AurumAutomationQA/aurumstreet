@@ -118,7 +118,7 @@ public class ReusableMethods {
 
     }
 	
-	 public void loginToStore() throws IOException, TimeoutException {
+	 public void loginToStore(){
 	        openBrowser("chrome","https://deepa.aurumconnect.in/");
 
 	        verifyIsDisplayed("//p[text()='Deepa Jewellers']","Deepa Jewellers header");
@@ -233,61 +233,71 @@ public class ReusableMethods {
     }
     
     
-    public void openBrowser(String browser, String URL) throws IOException, TimeoutException {
+    public void openBrowser(String browser, String URL){
 
-        if (driver == null) {
+		try {
+			 if (driver == null) {
 
-        	switch (browser.toLowerCase().trim()) {
-    		case "chrome": {
-    			ChromeOptions options = new ChromeOptions();
-    			options.addArguments("--disable-notifications");
-    			driver = new ChromeDriver(options);
-    			webDriver=driver;
-    			driver.manage().window().maximize();
-				getTest().log(LogStatus.INFO,"Opened chrome Browser Successfully and navigated to url : </br>" + URL);
-				 
-    		}
-    			break;
-    		case "firefox": {
-    			FirefoxOptions options = new FirefoxOptions();
-    			options.addArguments("--window-size=1400,900");
-    			options.addArguments("--headless");
-    			options.addArguments("--disable-notifications");
-    			driver = new FirefoxDriver(options);
-    			webDriver=driver;
-				getTest().log(LogStatus.INFO,"Opened FireFox Browser Successfully and navigated to url : </br>" + URL);
-				 
-    		}
-    			break;
+		        	switch (browser.toLowerCase().trim()) {
+		    		case "chrome": {
+		    			ChromeOptions options = new ChromeOptions();
+		    			options.addArguments("--disable-notifications");
+		    			driver = new ChromeDriver(options);
+		    			webDriver=driver;
+		    			driver.manage().window().maximize();
+						getTest().log(LogStatus.INFO,"Opened chrome Browser Successfully and navigated to url : </br>" + URL);
+						 
+		    		}
+		    			break;
+		    		case "firefox": {
+		    			FirefoxOptions options = new FirefoxOptions();
+		    			options.addArguments("--window-size=1400,900");
+		    			options.addArguments("--headless");
+		    			options.addArguments("--disable-notifications");
+		    			driver = new FirefoxDriver(options);
+		    			webDriver=driver;
+						getTest().log(LogStatus.INFO,"Opened FireFox Browser Successfully and navigated to url : </br>" + URL);
+						 
+		    		}
+		    			break;
 
-    		case "edge": {
-    			EdgeOptions options = new EdgeOptions();
-    			options.addArguments("--window-size=1400,900");
-    			options.addArguments("--headless");
-    			options.addArguments("--disable-notifications");
-    			driver = new EdgeDriver(options);
-    			webDriver=driver;
-				getTest().log(LogStatus.INFO,"Opened Edge Browser Successfully and navigated to url : </br>" + URL);
-				 
-    		}
-    			break;
+		    		case "edge": {
+		    			EdgeOptions options = new EdgeOptions();
+		    			options.addArguments("--window-size=1400,900");
+		    			options.addArguments("--headless");
+		    			options.addArguments("--disable-notifications");
+		    			driver = new EdgeDriver(options);
+		    			webDriver=driver;
+						getTest().log(LogStatus.INFO,"Opened Edge Browser Successfully and navigated to url : </br>" + URL);
+						 
+		    		}
+		    			break;
 
-    		default:
-    			ChromeOptions options = new ChromeOptions();
-    			options.addArguments("--window-size=1400,900");
-    			options.addArguments("--headless");
-    			options.addArguments("--disable-notifications");
-    			driver = new ChromeDriver(options);
-    			webDriver=driver;
-				getTest().log(LogStatus.INFO,"Opened Chrome Browser Successfully and navigated to url : </br>" + URL);
-				 
-    			break;
-    		}
-            driver.manage().window().maximize();
+		    		default:
+		    			ChromeOptions options = new ChromeOptions();
+		    			options.addArguments("--window-size=1400,900");
+		    			options.addArguments("--headless");
+		    			options.addArguments("--disable-notifications");
+		    			driver = new ChromeDriver(options);
+		    			webDriver=driver;
+						getTest().log(LogStatus.INFO,"Opened Chrome Browser Successfully and navigated to url : </br>" + URL);
+						 
+		    			break;
+		    		}
+		            driver.manage().window().maximize();
 
-            driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-        }
-        driver.get(URL);
+		            driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+		        }
+		        driver.get(URL);
+			
+			
+		} catch (Exception e) {
+			logFail("Exception while opening browser "+browser+" and navigating to url : </br>" + URL+" is due to <br/>"+e+addScreenShot());
+			    new Assertion().fail();
+		}
+		
+		
+       
     }
 	
 	
@@ -338,6 +348,7 @@ public class ReusableMethods {
 
 	protected void clickByCSS(String css,String elementName){
 		try {
+			Thread.sleep(2000);
 			driver.findElement(By.cssSelector(css)).click();
 			getTest().log(LogStatus.INFO, "clicked "+elementName);
 		} catch (Exception e) {
