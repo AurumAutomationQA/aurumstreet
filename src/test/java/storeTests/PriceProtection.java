@@ -24,8 +24,11 @@ import utility.ReusableMethods;
 public class PriceProtection extends ReusableMethods
 {
     @BeforeClass
-    public void prerequisites() {
+    public void prerequisites() throws Exception {
         initialise();
+        startTest("Login flow - Store");
+        loginToStore();
+        endTest();
     }
     
     @AfterClass

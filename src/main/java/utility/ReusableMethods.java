@@ -117,6 +117,36 @@ public class ReusableMethods {
         quitAllDrivers();
 
     }
+	
+	 public void loginToStore() throws IOException, TimeoutException {
+	        openBrowser("chrome","https://deepa.aurumconnect.in/");
+
+	        verifyIsDisplayed("//p[text()='Deepa Jewellers']","Deepa Jewellers header");
+	        click("//a[text()='Login']","Login link");
+
+	        verifyIsDisplayed("//h3[text()='Login']","Login label");
+	        verifyIsDisplayed("//button[text()='+91']/..//input[@placeholder='9999988888']","Mobile number field");
+
+	        clearNenterText("//button[text()='+91']/..//input[@placeholder='9999988888']","9392190045","Mobile number field");
+	        logScreenshot();
+
+	        click("//button[text()='Send OTP']","send OTP button");
+	        verifyIsDisplayed("//p[contains(text(),'A OTP has sent to ')]","OTP sent message");
+	        verifyIsDisplayed("//label[text()='Enter OTP']","Enter OTP label");
+
+	        String otp = "860821";
+	        clearNenterText("(//div[@role='group']//input)[1]", ""+otp.charAt(0), "otp 1st character");
+	        clearNenterText("(//div[@role='group']//input)[2]", ""+otp.charAt(1), "otp 2nd character");
+	        clearNenterText("(//div[@role='group']//input)[3]", ""+otp.charAt(2), "otp 3rd character");
+	        clearNenterText("(//div[@role='group']//input)[4]", ""+otp.charAt(3), "otp 4th character");
+	        clearNenterText("(//div[@role='group']//input)[5]", ""+otp.charAt(4), "otp 5th character");
+	        clearNenterText("(//div[@role='group']//input)[6]", ""+otp.charAt(5), "otp 6th character");
+
+	        click("//button[text()='Login']","Login button");
+	        verifyIsDisplayed("//span[text()='Dashboard']/..","dashboard button");
+	        logScreenshot();
+	    }
+
 
 	protected static synchronized void initialise() {
 
@@ -262,7 +292,7 @@ public class ReusableMethods {
 	
 	
 	protected void ewait(String xpath){ 
-		  new WebDriverWait(driver,Duration.ofSeconds(30)).until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpath))); 
+		  new WebDriverWait(driver,Duration.ofSeconds(10)).until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpath))); 
 	}
 	 
 
@@ -339,6 +369,32 @@ public class ReusableMethods {
 			getTest().log(LogStatus.INFO, "displayed "+elementName);
 		} catch (Exception e) {
 			getTest().log(LogStatus.FAIL, "Exception while checking the visibility of "+elementName+" is due to <br/>"+e+addScreenShot());
+			new Assertion().fail();
+		}
+	}
+	
+	protected void verifyIsDisabled(String xpath,String elementName){
+		try {
+			ewait(xpath);
+			if (driver.findElement(By.xpath(xpath)).isEnabled()) {
+				getTest().log(LogStatus.FAIL,elementName + " is enabled" + addScreenShot());
+				new Assertion().fail();
+			} else {
+				getTest().log(LogStatus.PASS,elementName + " is disabled");
+			}
+		} catch (Exception e) {
+			getTest().log(LogStatus.FAIL, "Exception while checking the disability of "+elementName+" is due to <br/>"+e+addScreenShot());
+			new Assertion().fail();
+		}
+	}
+	
+	protected void verifyIsEnabled(String xpath,String elementName){
+		try {
+			ewait(xpath);
+			driver.findElement(By.xpath(xpath)).isEnabled();
+			getTest().log(LogStatus.INFO, "Enabled "+elementName);
+		} catch (Exception e) {
+			getTest().log(LogStatus.FAIL, "Exception while checking the Enability of "+elementName+" is due to <br/>"+e+addScreenShot());
 			new Assertion().fail();
 		}
 	}
