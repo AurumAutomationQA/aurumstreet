@@ -1,5 +1,7 @@
 package storeTests;
 
+import java.io.File;
+
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -8,6 +10,7 @@ import org.testng.annotations.Test;
 import utility.ReusableMethods;
 
 public class Offers extends ReusableMethods {
+	String phoneNumber = randomPhoneNumber();
 
     @BeforeClass
     public void prerequisites() throws Exception {
@@ -260,7 +263,6 @@ public class Offers extends ReusableMethods {
         verifyIsDisplayed("//textarea[@placeholder='Ex: 1,2,5,6,7 Enter all Available Sizes']", "Placeholder - Ex: 1,2,5,6,7 Enter all Available Sizes");
         
 
-        
         // Starting Prices
         verifyIsDisplayed("//span[text()='Starting Prices']", "Label - Starting Prices");
         verifyIsDisplayed("//input[@id='va_startingPrices']", "Starting Prices input");
@@ -273,8 +275,6 @@ public class Offers extends ReusableMethods {
         verifyIsEnabled("//input[@id='va_maxPrice']", "Max Price input");
         verifyIsDisplayed("//input[@placeholder='Max price']", "Placeholder - Max Price");
         
-        
-        
         logScreenshot();
    
     }
@@ -282,12 +282,12 @@ public class Offers extends ReusableMethods {
     @Test(priority = 4)
     public void selectMakingAndVA_UiValidations() {
     	startTest("Select Making & VA and validate UI changes");
-    	
-check("//label[text()='VA']/../..//input[@type='checkbox']", "Checkbox - VA");
-    	
+     
+    	check("//label[text()='VA']/../..//input[@type='checkbox']", "Checkbox - VA");
+     
     	verifyIsDisplayed("//p[text()='VA' and text()=' Details']", "heading - VA Details");
-    	
-    	 // Event Type - radio group (label + radios)
+     
+      // Event Type - radio group (label + radios)
         verifyIsDisplayed("//p[text()='VA' and text()=' Details']/..//span[text()='Discount Type']", "Label - Discount Type in VA Details");
         verifyIsDisplayed("//p[text()='VA' and text()=' Details']/..//span[text()='Discount Type']/..//span[text()='*']", "Mandatory - Event Type in VA Details");
         
@@ -320,10 +320,10 @@ check("//label[text()='VA']/../..//input[@type='checkbox']", "Checkbox - VA");
         verifyIsDisplayed("//p[text()='VA' and text()=' Details']/..//input[@placeholder='Enter min grams']", "Placeholder - Enter min grams in VA Details");
 
         check("//label[text()='MAKING']/../..//input[@type='checkbox']", "Checkbox - MAKING");
-    	
-    	verifyIsDisplayed("//p[text()='MAKING' and text()=' Details']", "heading - MAKING Details");
-    	
-    	 // Event Type - radio group (label + radios)
+    
+        verifyIsDisplayed("//p[text()='MAKING' and text()=' Details']", "heading - MAKING Details");
+     
+      // Event Type - radio group (label + radios)
         verifyIsDisplayed("//p[text()='MAKING' and text()=' Details']/..//span[text()='Discount Type']", "Label - Discount Type in MAKING Details");
         verifyIsDisplayed("//p[text()='MAKING' and text()=' Details']/..//span[text()='Discount Type']/..//span[text()='*']", "Mandatory - Event Type in MAKING Details");
         
@@ -355,47 +355,83 @@ check("//label[text()='VA']/../..//input[@type='checkbox']", "Checkbox - VA");
         verifyIsEnabled("//p[text()='MAKING' and text()=' Details']/..//input[@id='Min Grams']", "Min Grams input in MAKING Details");
         verifyIsDisplayed("//p[text()='MAKING' and text()=' Details']/..//input[@placeholder='Enter min grams']", "Placeholder - Enter min grams in MAKING Details");
 
-        check("//label[text()='GENERAL']/../..//input[@type='checkbox']", "Checkbox - GENERAL");
-    	
-    	verifyIsDisplayed("//p[text()='GENERAL' and text()=' Details']", "heading - GENERAL Details");
-    	
-    	 // Event Type - radio group (label + radios)
-        verifyIsDisplayed("//p[text()='GENERAL' and text()=' Details']/..//span[text()='Discount Type']", "Label - Discount Type in GENERAL Details");
-        verifyIsDisplayed("//p[text()='GENERAL' and text()=' Details']/..//span[text()='Discount Type']/..//span[text()='*']", "Mandatory - Event Type in GENERAL Details");
-        
-        verifyIsDisplayed("//p[text()='GENERAL' and text()=' Details']/..//input[@value='PERCENT']", "PERCENT radio button in GENERAL Details");
-        verifyIsDisplayed("//p[text()='GENERAL' and text()=' Details']/..//label[text()='Percent']", "Percent radio option in GENERAL Details");
-        verifyIsEnabled("//p[text()='GENERAL' and text()=' Details']/..//input[@value='PERCENT']", "PERCENT radio button in GENERAL Details");
-        
-        verifyIsDisplayed("//p[text()='GENERAL' and text()=' Details']/..//input[@value='FLAT']", "FLAT radio button in GENERAL Details");
-        verifyIsDisplayed("//p[text()='GENERAL' and text()=' Details']/..//label[text()='Flat']", "Flat radio option in GENERAL Details");
-        verifyIsEnabled("//p[text()='GENERAL' and text()=' Details']/..//input[@value='FLAT']", "FLAT radio button in GENERAL Details");
-        
-        // Discount Value
-        verifyIsDisplayed("//p[text()='GENERAL' and text()=' Details']/..//span[text()='Discount Value']", "Label - Discount Value in GENERAL Details");
-        verifyIsDisplayed("//p[text()='GENERAL' and text()=' Details']/..//span[text()='Discount Value']/..//span[text()='*']", "Mandatory - Discount Value in GENERAL Details");
-        verifyIsDisplayed("//p[text()='GENERAL' and text()=' Details']/..//input[@id='Discount Value']", "Discount Value input in GENERAL Details");
-        verifyIsEnabled("//p[text()='GENERAL' and text()=' Details']/..//input[@id='Discount Value']", "Discount Value input in GENERAL Details");
-        verifyIsDisplayed("//p[text()='GENERAL' and text()=' Details']/..//input[@placeholder='Enter discount value']", "Placeholder - Enter discount value in GENERAL Details");
-
-        // Discount Value
-        verifyIsDisplayed("//p[text()='GENERAL' and text()=' Details']/..//span[text()='Min Purchase Value']", "Label - Min Purchase Value in GENERAL Details");
-        verifyIsDisplayed("//p[text()='GENERAL' and text()=' Details']/..//span[text()='Min Purchase Value']/..//span[text()='*']", "Mandatory - Min Purchase Value in GENERAL Details");
-        verifyIsDisplayed("//p[text()='GENERAL' and text()=' Details']/..//input[@id='Min Purchase Value']", "Min Purchase Value input in GENERAL Details");
-        verifyIsEnabled("//p[text()='GENERAL' and text()=' Details']/..//input[@id='Min Purchase Value']", "Min Purchase Value input in GENERAL Details");
-        verifyIsDisplayed("//p[text()='GENERAL' and text()=' Details']/..//input[@placeholder='Enter min purchase value']", "Placeholder - Enter min purchase value in GENERAL Details");
-
-        // Discount Value
-        verifyIsDisplayed("//p[text()='GENERAL' and text()=' Details']/..//span[text()='Min Grams']", "Label - Min Grams in GENERAL Details");
-        verifyIsDisplayed("//p[text()='GENERAL' and text()=' Details']/..//input[@id='Min Grams']", "Min Grams input in GENERAL Details");
-        verifyIsEnabled("//p[text()='GENERAL' and text()=' Details']/..//input[@id='Min Grams']", "Min Grams input in GENERAL Details");
-        verifyIsDisplayed("//p[text()='GENERAL' and text()=' Details']/..//input[@placeholder='Enter min grams']", "Placeholder - Enter min grams in GENERAL Details");
-
-        
-    	
+        logScreenshot();
+    
     }
 
-    
-    
-    
+    @Test(priority = 5)
+    public void formMakingVASubmission_PriorityMinusFive() {
+        startTest("Form submission - Making & VA offer");
+
+        // Fill basic offer details
+        clearNenterText("//input[@id='Offer Name']", "Automation Test Offer Making VA - " + System.currentTimeMillis(), "Offer Name input");
+        clearNenterText("//input[@id='SKU/ID']", "SKU " + System.currentTimeMillis(), "SKU/ID input");
+
+        // Select Offer Type -> Making & VA Details
+        /*click("//input[@id='offer-type']", "Select Offer Type input");
+        sleep(2);
+        click("//div[text()='Making & VA Details']", "option - Making & VA Details");*/
+        
+        // Start Date & End Date
+        click("//input[@placeholder='Select start date']", "Start Date input");
+        datePicker();
+        
+        click("//input[@placeholder='Select end date']", "End Date input");
+        datePicker();
+
+        // Description
+        clearNenterText("//textarea[@id='Description']", "Automation offer description", "Description textarea");
+
+        // Branches - select first branch if dropdown exists
+        click("//input[@id='offerBranches']", "Branches input");
+        sleep(1);
+        click("(//div[contains(@id,'react-select')])[3]", "First branch option");
+        
+        // State & City selection
+        click("//input[@id='offer-state']", "State input");
+        sleep(1);
+        click("//div[text()='Uttar Pradesh']", "State option - Uttar Pradesh");
+        
+        click("//input[@id='offer-city']", "City input");
+        sleep(1);
+        click("//div[text()='Agra']", "City option - Agra");
+
+        // Check VA and MAKING
+        check("//label[text()='VA']/../..//input[@type='checkbox']", "Checkbox - VA");
+        check("//label[text()='MAKING']/../..//input[@type='checkbox']", "Checkbox - MAKING");
+
+        // Fill VA Details
+        click("//p[text()='VA' and text()=' Details']/..//input[@value='PERCENT']", "PERCENT radio in VA Details");
+
+        clearNenterText("//p[text()='VA' and text()=' Details']/..//input[@id='Discount Value']", "10", "Discount Value in VA Details");
+        clearNenterText("//p[text()='VA' and text()=' Details']/..//input[@id='Min Purchase Value']", "1000", "Min Purchase Value in VA Details");
+        clearNenterText("//p[text()='VA' and text()=' Details']/..//input[@id='Min Grams']", "1", "Min Grams in VA Details");
+
+        // Fill MAKING Details
+        click("//p[text()='MAKING' and text()=' Details']/..//input[@value='PERCENT']", "PERCENT radio in MAKING Details");
+
+        clearNenterText("//p[text()='MAKING' and text()=' Details']/..//input[@id='Discount Value']", "5", "Discount Value in MAKING Details");
+        clearNenterText("//p[text()='MAKING' and text()=' Details']/..//input[@id='Min Purchase Value']", "500", "Min Purchase Value in MAKING Details");
+        clearNenterText("//p[text()='MAKING' and text()=' Details']/..//input[@id='Min Grams']", "2", "Min Grams in MAKING Details");
+
+        // Contact mobile and whatsapp
+        clearNenterText("//input[@id='mobileNumber']", phoneNumber, "Mobile Number input");
+        clearNenterText("//input[@id='whatsappNumber']",phoneNumber, "Whatsapp Number input");
+
+        // Terms & Conditions - try to send text to contenteditable
+        clearNenterText("//div[@contenteditable='true']", "Terms and conditions for automated test Terms and conditions for automated test", "Offer Terms & Conditions");
+
+        // File uploads - Thumbnail & Attachments
+        uploadFile("//input[@id='offer-thumbnail' and @type='file']", System.getProperty("user.dir") + File.separator + "Attachments" + File.separator + "offer_thumbnail.jpeg", "Thumbnail upload");
+        sleep(2);
+        uploadFile("//input[@id='offer-attachments' and @type='file']", System.getProperty("user.dir") + File.separator + "Attachments" + File.separator + "offer_attachment.jpg", "Offers Attachments upload");
+        sleep(2);
+        
+        // Click Create Offer
+        click("//button[text()='Create Offer']", "Create Offer button");
+        // Capture toast if any
+        toastMessageValidation("//div[contains(@class,'Toastify')]//span", "Successfully", "Offers created successfully");
+        logScreenshot();
+    }
+
 }

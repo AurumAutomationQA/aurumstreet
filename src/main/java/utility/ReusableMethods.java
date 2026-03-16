@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Properties;
 import java.util.UUID;
-import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
@@ -589,5 +588,49 @@ public class ReusableMethods {
 	protected void switchToAndroidDriver() {
 		driver = androidDriver;
 	}
+	
+	protected void datePicker() {
+		Date date = new Date();
+
+		String day = new SimpleDateFormat("d").format(date);
+		String month = new SimpleDateFormat("MMMM").format(date);
+		String year = new SimpleDateFormat("yyyy").format(date);
+
+		driver.findElement(By.xpath("//select[contains(@class,'react-datepicker__month-select')]")).sendKeys(month);
+		driver.findElement(By.xpath("//select[contains(@class,'react-datepicker__year-select')]")).sendKeys(year);
+		driver.findElement(By.xpath("//div[contains(@class,'react-datepicker__day') and not(contains(@class,'outside-month')) and text()='"+day+"']")).click();
+	}
+	
+	protected void uploadFile(String xpath, String filePath, String elementName) {
+		try {
+			WebElement upload = driver.findElement(By.xpath(xpath));
+			((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", upload);
+			upload.sendKeys(filePath);
+			getTest().log(LogStatus.INFO, "Uploaded file in "+elementName);
+		} catch (Exception e) {
+			getTest().log(LogStatus.FAIL, "Exception while uploading file in "+elementName+" is due to <br/>"+e+addScreenShot());
+			new Assertion().fail();
+		}
+	}
+	
+	protected void toastMessageValidation(String xpath, String expectedMessage, String elementName) {
+		try {
+			WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+			wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpath)));
+			WebElement toastInfo = driver.findElement(By.xpath(xpath));
+			String actualMessage = toastInfo.getText();
+			System.out.println(actualMessage);
+			if (actualMessage.contains(expectedMessage)) {
+				getTest().log(LogStatus.PASS, "Toast message validation passed: " + actualMessage);
+			} else {
+				getTest().log(LogStatus.FAIL, "Toast message validation failed. Expected to contain: '" + expectedMessage + "' but got: '" + actualMessage + "'" + addScreenShot());
+				new Assertion().fail("Toast message validation failed. Expected to contain: '" + expectedMessage + "' but got: '" + actualMessage + "'");
+			}
+		} catch (Exception e) {
+			getTest().log(LogStatus.FAIL, "Exception while validating toast message is due to <br/>" + e + addScreenShot());
+			new Assertion().fail("Exception while validating toast message", e);
+		}
+	}
+	
 	
 }
