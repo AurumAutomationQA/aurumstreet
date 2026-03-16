@@ -295,7 +295,48 @@ public class PriceProtectionUI extends ReusableMethods
         verifyIsDisplayed("//p[text()='Next Purchase Rules']/..//div[text()='Search Sub Categories']", "Placeholder - Select Sub Categories Next Purchase Rules");
         
         
+        verifyIsDisplayed("//p[text()='Next Purchase Additional Offers']", "heading - Next Purchase Additional Offers");
         
+        verifyIsDisplayed("//p[text()='Next Purchase Additional Offers']/..//span[text()='Offer Type']", "Label - Offer Type");
+        verifyIsDisplayed("//p[text()='Next Purchase Additional Offers']/..//span[text()='Offer Type']/..//span[text()='*']", "Mandatory - Offer Type");
+        
+        verifyIsDisplayed("//p[text()='Next Purchase Additional Offers']/..//input[@id='offerType flat']", "Flat radio button");
+        verifyIsDisplayed("//p[text()='Next Purchase Additional Offers']/..//label[text()='Flat']", "Flat radio option");
+        verifyIsEnabled("//p[text()='Next Purchase Additional Offers']/..//input[@id='offerType flat']", "Flat radio button");
+        
+        verifyIsDisplayed("//p[text()='Next Purchase Additional Offers']/..//input[@id='offerType percentage']", "Percentage radio buttton");
+        verifyIsDisplayed("//p[text()='Next Purchase Additional Offers']/..//label[text()='Percentage']", "Percentage radio label");
+        verifyIsEnabled("//p[text()='Next Purchase Additional Offers']/..//input[@id='offerType percentage']", "Percentage radio buttton");
+
+        
+        
+        verifyIsDisplayed("//p[text()='Next Purchase Additional Offers']/..//span[text()='Offer Value']", "label - Offer Value in Next Purchase Additional Offers");
+		verifyIsDisplayed("//p[text()='Next Purchase Additional Offers']/..//input[@id='Offer Value']", "Offer Value input in Next Purchase Additional Offers");
+		verifyIsEnabled("//p[text()='Next Purchase Additional Offers']/..//input[@id='Offer Value']", "Offer Value input in Next Purchase Additional Offers");
+		verifyIsDisplayed("//p[text()='Next Purchase Additional Offers']/..//input[@placeholder='Enter offer value']", "placeholder - Enter offer value in Next Purchase Additional Offers");
+		
+        verifyIsDisplayed("//p[text()='Next Purchase Additional Offers']/..//span[text()='Making Charge']", "label - Making Charge in Next Purchase Additional Offers");
+		verifyIsDisplayed("//p[text()='Next Purchase Additional Offers']/..//input[@id='Making Charge']", "Making Charge input in Next Purchase Additional Offers");
+		verifyIsEnabled("//p[text()='Next Purchase Additional Offers']/..//input[@id='Making Charge']", "Making Charge input in Next Purchase Additional Offers");
+		verifyIsDisplayed("//p[text()='Next Purchase Additional Offers']/..//input[@placeholder='Enter making charge']", "placeholder - Enter making charge in Next Purchase Additional Offers");
+		
+		verifyIsDisplayed("//p[text()='Next Purchase Additional Offers']/..//span[text()='Making Charge Type']", "Label - Making Charge Type in Next Purchase Additional Offers");
+        verifyIsDisplayed("//p[text()='Next Purchase Additional Offers']/..//span[text()='Making Charge Type']/..//span[text()='*']", "Mandatory - Making Charge Type in Next Purchase Additional Offers");
+        
+        verifyIsDisplayed("//p[text()='Next Purchase Additional Offers']/..//input[@id='makingChargeType flat']", "makingChargeType Flat radio button in Next Purchase Additional Offers");
+        verifyIsDisplayed("//p[text()='Next Purchase Additional Offers']/..//input[@id='makingChargeType flat']/../../../..//label[text()='Flat']", "makingChargeType Flat radio option in Next Purchase Additional Offers");
+        verifyIsEnabled("//p[text()='Next Purchase Additional Offers']/..//input[@id='makingChargeType flat']", "makingChargeTypeFlat radio button in Next Purchase Additional Offers");
+        
+        verifyIsDisplayed("//p[text()='Next Purchase Additional Offers']/..//input[@id='makingChargeType percentage']", "makingChargeType Percentage radio buttton in Next Purchase Additional Offers");
+        verifyIsDisplayed("//p[text()='Next Purchase Additional Offers']/..//input[@id='makingChargeType percentage']/../../../..//label[text()='Percentage']", "makingChargeType Percentage radio label in Next Purchase Additional Offers");
+        verifyIsEnabled("//p[text()='Next Purchase Additional Offers']/..//input[@id='makingChargeType percentage']", "makingChargeType Percentage radio buttton in Next Purchase Additional Offers");
+
+        verifyIsDisplayed("//p[text()='Next Purchase Additional Offers']/..//span[text()='Validity']", "label - Validity in Next Purchase Rules in Next Purchase Additional Offers");
+		verifyIsDisplayed("//p[text()='Next Purchase Additional Offers']/..//input[@id='additional-offers-validity']", "Validity input in Next Purchase Rules in Next Purchase Additional Offers");
+		verifyIsEnabled("//p[text()='Next Purchase Additional Offers']/..//input[@id='additional-offers-validity']", "Validity input in Next Purchase Rules in Next Purchase Additional Offers");
+		verifyIsDisplayed("//p[text()='Next Purchase Additional Offers']/..//div[text()='Select...']", "placeholder - Select... in Next Purchase Additional Offers");
+		
+
         
         logScreenshot();
         
