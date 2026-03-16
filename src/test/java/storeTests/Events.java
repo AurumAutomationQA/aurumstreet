@@ -2,8 +2,6 @@ package storeTests;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
