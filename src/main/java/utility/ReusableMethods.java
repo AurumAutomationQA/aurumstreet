@@ -14,18 +14,23 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.devtools.DevTools;
+import org.openqa.selenium.devtools.HasDevTools;
+import org.openqa.selenium.devtools.v122.network.Network;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -46,11 +51,11 @@ import io.appium.java_client.service.local.AppiumServiceBuilder;
 
 
 public class ReusableMethods {
-	
+
 	public WebDriver driver;
 	public WebDriver webDriver;
 	public WebDriver androidDriver;
-    
+
 	static Map<Integer,ExtentTest> extentTestMap				 = new HashMap<Integer,ExtentTest>();
 	static Map<Integer,ExtentTest> extentParentMap 				 = new HashMap<Integer,ExtentTest>();
 	static Map<Integer,ExtentReports> extentreportsMap			 = new HashMap<Integer,ExtentReports>();
@@ -65,7 +70,7 @@ public class ReusableMethods {
 	protected static String localHostURL="http://127.0.0.1:4723";
 	protected static String apkName="aurum_staging_11_Mar.apk";
 	protected static String appPath = System.getProperty("user.dir") + File.separator + "Downloads" + File.separator + apkName;
-	
+
 	public synchronized static void initializeReportLocation(String reportlocation) {
 		reportLocationMap.put((int) (long) (Thread.currentThread().getId()), reportlocation);
 	}
@@ -108,215 +113,270 @@ public class ReusableMethods {
 	public void logScreenshot(){
 		getTest().log(LogStatus.INFO,  addScreenShot());	
 	}
-	
-	
-	@AfterSuite
-    public void stopAllDrivers() {
 
-        quitAllDrivers();
 
-    }
-	
-	 public void loginToStore(){
-	        openBrowser("chrome","https://deepa.aurumconnect.in/");
+	//@AfterSuite
+	public void stopAllDrivers() {
 
-	        verifyIsDisplayed("//p[text()='Deepa Jewellers']","Deepa Jewellers header");
-	        click("//a[text()='Login']","Login link");
+		quitAllDrivers();
 
-	        verifyIsDisplayed("//h3[text()='Login']","Login label");
-	        verifyIsDisplayed("//button[text()='+91']/..//input[@placeholder='9999988888']","Mobile number field");
+	}
 
-	        clearNenterText("//button[text()='+91']/..//input[@placeholder='9999988888']","9392190045","Mobile number field");
-	        logScreenshot();
+	public void loginToStore(){
+		openBrowser("chrome","https://kinhub:KIPL_1122%40deepa.aurumsconnect.com/");
 
-	        click("//button[text()='Send OTP']","send OTP button");
-	        verifyIsDisplayed("//p[contains(text(),'A OTP has sent to ')]","OTP sent message");
-	        verifyIsDisplayed("//label[text()='Enter OTP']","Enter OTP label");
+		verifyIsDisplayed("//p[text()='Deepa Jewellers']","Deepa Jewellers header");
+		click("//a[text()='Login']","Login link");
 
-	        String otp = "860821";
-	        clearNenterText("(//div[@role='group']//input)[1]", ""+otp.charAt(0), "otp 1st character");
-	        clearNenterText("(//div[@role='group']//input)[2]", ""+otp.charAt(1), "otp 2nd character");
-	        clearNenterText("(//div[@role='group']//input)[3]", ""+otp.charAt(2), "otp 3rd character");
-	        clearNenterText("(//div[@role='group']//input)[4]", ""+otp.charAt(3), "otp 4th character");
-	        clearNenterText("(//div[@role='group']//input)[5]", ""+otp.charAt(4), "otp 5th character");
-	        clearNenterText("(//div[@role='group']//input)[6]", ""+otp.charAt(5), "otp 6th character");
+		verifyIsDisplayed("//h3[text()='Login']","Login label");
+		verifyIsDisplayed("//button[text()='+91']/..//input[@placeholder='9999988888']","Mobile number field");
 
-	        click("//button[text()='Login']","Login button");
-	        verifyIsDisplayed("//span[text()='Dashboard']/..","dashboard button");
-	        logScreenshot();
-	    }
+		clearNenterText("//button[text()='+91']/..//input[@placeholder='9999988888']","9392190045","Mobile number field");
+		logScreenshot();
+
+		click("//button[text()='Send OTP']","send OTP button");
+		verifyIsDisplayed("//p[contains(text(),'A OTP has sent to ')]","OTP sent message");
+		verifyIsDisplayed("//label[text()='Enter OTP']","Enter OTP label");
+
+		String otp = "860821";
+		clearNenterText("(//div[@role='group']//input)[1]", ""+otp.charAt(0), "otp 1st character");
+		clearNenterText("(//div[@role='group']//input)[2]", ""+otp.charAt(1), "otp 2nd character");
+		clearNenterText("(//div[@role='group']//input)[3]", ""+otp.charAt(2), "otp 3rd character");
+		clearNenterText("(//div[@role='group']//input)[4]", ""+otp.charAt(3), "otp 4th character");
+		clearNenterText("(//div[@role='group']//input)[5]", ""+otp.charAt(4), "otp 5th character");
+		clearNenterText("(//div[@role='group']//input)[6]", ""+otp.charAt(5), "otp 6th character");
+
+		click("//button[text()='Login']","Login button");
+		verifyIsDisplayed("//span[text()='Dashboard']/..","dashboard button");
+		logScreenshot();
+	}
 
 
 	protected static synchronized void initialise() {
 
-        try {
+		try {
 
-            File file = new File("./src/main/java/testData/testData.properties");
+			File file = new File("./src/main/java/testData/testData.properties");
 
-            FileInputStream fileInput = new FileInputStream(file);
+			FileInputStream fileInput = new FileInputStream(file);
 
-            prop.load(fileInput);
+			prop.load(fileInput);
 
-        } catch (IOException e) {
+		} catch (IOException e) {
 
-            e.printStackTrace();
-        }
+			e.printStackTrace();
+		}
 
-        if (reportLocation==null && htmlLocation==null && reports==null) {
+		if (reportLocation==null && htmlLocation==null && reports==null) {
 
-            reportLocation = System.getProperty("user.dir")+ "/Reports/Automation_"+ new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(new Date())+ "/";
+			reportLocation = System.getProperty("user.dir")+ "/Reports/Automation_"+ new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(new Date())+ "/";
 
-            htmlLocation = "Automation_"+ new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss'.html'").format(new Date());
+			htmlLocation = "Automation_"+ new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss'.html'").format(new Date());
 
-            reports = new ExtentReports(reportLocation + htmlLocation, false);
-        }
-        initializeReportLocation(reportLocation);
+			reports = new ExtentReports(reportLocation + htmlLocation, false);
+		}
+		initializeReportLocation(reportLocation);
 		startReporter(reportLocation+htmlLocation);
-    }
-	
-    
-    public static void startAppiumService() {
+	}
 
-        if (service == null) {
-            String appiumHome = System.getenv("APPDATA") + File.separator + "npm";
 
-            File mainJS = new File(appiumHome+ File.separator + "node_modules"+ File.separator + "appium"+ File.separator + "build"+ File.separator + "lib"+ File.separator + "main.js");
+	public static void startAppiumService() {
 
-            service = new AppiumServiceBuilder()
-                    .withAppiumJS(mainJS)
-                    .withIPAddress(localHost)
-                    .usingPort(localPort)
-                    .build();
-            service.start();
+		if (service == null) {
+			String appiumHome = System.getenv("APPDATA") + File.separator + "npm";
 
-            System.out.println("Appium Server Started");
-        }
-    }
-    
-    
-    public void launchApp() {
+			File mainJS = new File(appiumHome+ File.separator + "node_modules"+ File.separator + "appium"+ File.separator + "build"+ File.separator + "lib"+ File.separator + "main.js");
 
-    	try {
+			service = new AppiumServiceBuilder()
+					.withAppiumJS(mainJS)
+					.withIPAddress(localHost)
+					.usingPort(localPort)
+					.build();
+			service.start();
 
-            startAppiumService();
+			System.out.println("Appium Server Started");
+		}
+	}
 
-            UiAutomator2Options options = new UiAutomator2Options();
 
-            options.setPlatformName("Android");
-            options.setAutomationName("UiAutomator2");
-
-            options.setApp(appPath);
-
-            options.setAutoGrantPermissions(true);
-            options.setNoReset(false);
-            options.setFullReset(false);
-
-            driver = new AndroidDriver(new URL("http://" + localHost + ":" + localPort),options);
-            androidDriver=driver;
-
-            driver.manage().timeouts()
-                    .implicitlyWait(Duration.ofSeconds(10));
-
-            if (driver != null) {
-                System.out.println("App launched successfully");
-            } else {
-                throw new RuntimeException("Driver session not created");
-            }
-
-        } catch (Exception e) {
-
-            throw new RuntimeException("Failed to launch app", e);
-        }
-    	logInfo("App Launched Successfully");
-
-    }
-    
-    
-    public void openBrowser(String browser, String URL){
+	public void launchApp() {
 
 		try {
-			 if (driver == null) {
 
-		        	switch (browser.toLowerCase().trim()) {
-		    		case "chrome": {
-		    			ChromeOptions options = new ChromeOptions();
-		    			options.addArguments("--disable-notifications");
-		    			driver = new ChromeDriver(options);
-		    			webDriver=driver;
-		    			driver.manage().window().maximize();
-						getTest().log(LogStatus.INFO,"Opened chrome Browser Successfully and navigated to url : </br>" + URL);
-						 
-		    		}
-		    			break;
-		    		case "firefox": {
-		    			FirefoxOptions options = new FirefoxOptions();
-		    			options.addArguments("--window-size=1400,900");
-		    			options.addArguments("--headless");
-		    			options.addArguments("--disable-notifications");
-		    			driver = new FirefoxDriver(options);
-		    			webDriver=driver;
-						getTest().log(LogStatus.INFO,"Opened FireFox Browser Successfully and navigated to url : </br>" + URL);
-						 
-		    		}
-		    			break;
+			startAppiumService();
 
-		    		case "edge": {
-		    			EdgeOptions options = new EdgeOptions();
-		    			options.addArguments("--window-size=1400,900");
-		    			options.addArguments("--headless");
-		    			options.addArguments("--disable-notifications");
-		    			driver = new EdgeDriver(options);
-		    			webDriver=driver;
-						getTest().log(LogStatus.INFO,"Opened Edge Browser Successfully and navigated to url : </br>" + URL);
-						 
-		    		}
-		    			break;
+			UiAutomator2Options options = new UiAutomator2Options();
 
-		    		default:
-		    			ChromeOptions options = new ChromeOptions();
-		    			options.addArguments("--window-size=1400,900");
-		    			options.addArguments("--headless");
-		    			options.addArguments("--disable-notifications");
-		    			driver = new ChromeDriver(options);
-		    			webDriver=driver;
-						getTest().log(LogStatus.INFO,"Opened Chrome Browser Successfully and navigated to url : </br>" + URL);
-						 
-		    			break;
-		    		}
-		            driver.manage().window().maximize();
+			options.setPlatformName("Android");
+			options.setAutomationName("UiAutomator2");
 
-		            driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-		        }
-		        driver.get(URL);
-			
-			
+			options.setApp(appPath);
+
+			options.setAutoGrantPermissions(true);
+			options.setNoReset(false);
+			options.setFullReset(false);
+
+			driver = new AndroidDriver(new URL("http://" + localHost + ":" + localPort),options);
+			androidDriver=driver;
+
+			driver.manage().timeouts()
+			.implicitlyWait(Duration.ofSeconds(10));
+
+			if (driver != null) {
+				System.out.println("App launched successfully");
+			} else {
+				throw new RuntimeException("Driver session not created");
+			}
+
+		} catch (Exception e) {
+
+			throw new RuntimeException("Failed to launch app", e);
+		}
+		logInfo("App Launched Successfully");
+
+	}
+
+
+	public void openBrowser(String browser, String URL){
+
+		try {
+			if (driver == null) {
+
+				switch (browser.toLowerCase().trim()) {
+				case "chrome": {
+					
+					ChromeOptions options = new ChromeOptions();
+					options.addArguments("--disable-notifications");
+					driver = new ChromeDriver(options);
+					webDriver=driver;
+					
+					
+					
+
+					/*
+					 * DevTools devTools = ((HasDevTools) driver).getDevTools();
+					 * devTools.createSession();
+					 * 
+					 * devTools.send(Network.enable(Optional.empty(), Optional.empty(),
+					 * Optional.empty()));
+					 * 
+					 * devTools.addListener(Network.authRequired(), auth -> {
+					 * devTools.send(Network.continueWithAuth( auth.getRequestId(), new
+					 * AuthChallengeResponse( AuthChallengeResponse.Response.PROVIDECREDENTIALS,
+					 * Optional.of("username"), Optional.of("password") ) )); });
+					 */
+					driver.get("https://example.com");
+					
+					
+					
+					
+					driver.manage().window().maximize();
+					getTest().log(LogStatus.INFO,"Opened chrome Browser Successfully and navigated to url : </br>" + URL);
+
+				}
+				break;
+				case "firefox": {
+					FirefoxOptions options = new FirefoxOptions();
+					options.addArguments("--window-size=1400,900");
+					options.addArguments("--headless");
+					options.addArguments("--disable-notifications");
+					driver = new FirefoxDriver(options);
+					webDriver=driver;
+					getTest().log(LogStatus.INFO,"Opened FireFox Browser Successfully and navigated to url : </br>" + URL);
+
+				}
+				break;
+
+				case "edge": {
+					EdgeOptions options = new EdgeOptions();
+					options.addArguments("--window-size=1400,900");
+					options.addArguments("--headless");
+					options.addArguments("--disable-notifications");
+					driver = new EdgeDriver(options);
+					webDriver=driver;
+					getTest().log(LogStatus.INFO,"Opened Edge Browser Successfully and navigated to url : </br>" + URL);
+
+				}
+				break;
+
+				default:
+					ChromeOptions options = new ChromeOptions();
+					options.addArguments("--window-size=1400,900");
+					options.addArguments("--headless");
+					options.addArguments("--disable-notifications");
+					driver = new ChromeDriver(options);
+					webDriver=driver;
+					getTest().log(LogStatus.INFO,"Opened Chrome Browser Successfully and navigated to url : </br>" + URL);
+
+					break;
+				}
+				driver.manage().window().maximize();
+
+				driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+			}
+			driver.get(URL);
+
+
 		} catch (Exception e) {
 			logFail("Exception while opening browser "+browser+" and navigating to url : </br>" + URL+" is due to <br/>"+e+addScreenShot());
-			    new Assertion().fail();
+			new Assertion().fail();
 		}
-		
-		
-       
-    }
-	
-	
-	protected void ewait(String xpath){ 
-		  new WebDriverWait(driver,Duration.ofSeconds(10)).until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpath))); 
+
+
+
 	}
-	 
+
+
+	protected void ewait(String xpath){ 
+		new WebDriverWait(driver,Duration.ofSeconds(10)).until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpath))); 
+	}
+
 
 	protected void clearNenterText(String xpath,String text,String elementName){
 		try {
 			ewait(xpath);
 			driver.findElement(By.xpath(xpath)).clear();
 			driver.findElement(By.xpath(xpath)).sendKeys(text);
-			getTest().log(LogStatus.INFO, "Cleared and entered text in "+elementName);
+			getTest().log(LogStatus.INFO, "Cleared and entered text as '"+text+"' in "+elementName);
 		} catch (Exception e) {
 			getTest().log(LogStatus.FAIL, "Exception while clearing and entering text in "+elementName+" is due to <br/>"+e+addScreenShot());
 			new Assertion().fail();
 		}
 	}
-	
+
+	protected void clearNenterTextWithOutWait(String xpath,String text,String elementName){
+		try {
+			driver.findElement(By.xpath(xpath)).clear();
+			driver.findElement(By.xpath(xpath)).sendKeys(text);
+			getTest().log(LogStatus.INFO, "Cleared and entered text as '"+text+"' in "+elementName);
+		} catch (Exception e) {
+			getTest().log(LogStatus.FAIL, "Exception while clearing and entering text in "+elementName+" is due to <br/>"+e+addScreenShot());
+			new Assertion().fail();
+		}
+	}
+
+	protected void clearText(String xpath,String elementName){
+		try {
+			ewait(xpath);
+			driver.findElement(By.xpath(xpath)).sendKeys(Keys.CONTROL + "a");
+			driver.findElement(By.xpath(xpath)).sendKeys(Keys.DELETE);
+			getTest().log(LogStatus.INFO, "Cleared text in "+elementName);
+		} catch (Exception e) {
+			getTest().log(LogStatus.FAIL, "Exception while clearing text in "+elementName+" is due to <br/>"+e+addScreenShot());
+			new Assertion().fail();
+		}
+	}
+
+	protected void pressTab(){
+		try {
+			driver.findElement(By.xpath("//html")).sendKeys(Keys.TAB);
+			getTest().log(LogStatus.INFO, "pressed tab key");
+		} catch (Exception e) {
+			getTest().log(LogStatus.FAIL, "Exception while pressing tab is "+e+addScreenShot());
+			new Assertion().fail();
+		}
+	}
+
 
 	protected void verifyTextDisplayed(String xpath,String text,String elementName){
 		try {
@@ -345,6 +405,44 @@ public class ReusableMethods {
 		}
 	}
 
+	protected void clickJS(String xpath,String elementName){
+		try {
+			WebElement option = driver.findElement(By.xpath("//div[text()='3 Months']"));
+			((JavascriptExecutor) driver).executeScript("arguments[0].click();", option);
+			getTest().log(LogStatus.INFO, "clicked "+elementName);
+		} catch (Exception e) {
+			getTest().log(LogStatus.FAIL, "Exception while clicking "+elementName+" is due to <br/>"+e);
+			new Assertion().fail();
+		}
+	}
+
+	protected void scrollToElement(String xpath,String elementName){
+
+		try {
+			ewait(xpath);
+			WebElement element = driver.findElement(By.xpath(xpath));
+			JavascriptExecutor js = (JavascriptExecutor) driver;
+			js.executeScript("arguments[0].scrollIntoView(true);", element);
+			sleep(1);
+			getTest().log(LogStatus.INFO, "scrolled to "+elementName);
+		} catch (Exception e) {
+			getTest().log(LogStatus.FAIL, "Exception while scrolling to "+elementName+" is due to <br/>"+e);
+			new Assertion().fail();
+		}
+
+		
+	}
+
+	protected void clickWithOutWait(String xpath,String elementName){
+		try {
+			driver.findElement(By.xpath(xpath)).click();
+			getTest().log(LogStatus.INFO, "clicked "+elementName);
+		} catch (Exception e) {
+			getTest().log(LogStatus.FAIL, "Exception while clicking "+elementName+" is due to <br/>"+e);
+			new Assertion().fail();
+		}
+	}
+
 	protected void check(String xpath,String elementName){
 		try {
 			if (!driver.findElement(By.xpath(xpath)).isSelected()) {
@@ -354,6 +452,19 @@ public class ReusableMethods {
 			}
 		} catch (Exception e) {
 			getTest().log(LogStatus.FAIL, "Exception while checking "+elementName+" is due to <br/>"+e);
+			new Assertion().fail();
+		}
+	}
+
+	protected void uncheck(String xpath,String elementName){
+		try {
+			if (driver.findElement(By.xpath(xpath)).isSelected()) {
+				ewait(xpath);
+				driver.findElement(By.xpath(xpath)).click();
+				getTest().log(LogStatus.INFO, "unchecked " + elementName);
+			}
+		} catch (Exception e) {
+			getTest().log(LogStatus.FAIL, "Exception while unchecking "+elementName+" is due to <br/>"+e);
 			new Assertion().fail();
 		}
 	}
@@ -376,21 +487,21 @@ public class ReusableMethods {
 			new Assertion().fail();
 		}
 	}
-	
+
 	public boolean isDisplayed(String xpath) {
 		try {
-	        boolean displayed = driver.findElement(By.xpath(xpath)).isDisplayed();
-	        if (displayed) {
-	            getTest().log(LogStatus.INFO, "Displayed: " + xpath);
-	        }
-	        return displayed;
-	    } catch (NoSuchElementException e) {
-	        getTest().log(LogStatus.INFO, "Element not found: " + xpath);
-	        return false;
-	    } catch (Exception e) {
-	        getTest().log(LogStatus.ERROR, "Error checking display status of: " + xpath + " - " + e);
-	        return false;
-	    }
+			boolean displayed = driver.findElement(By.xpath(xpath)).isDisplayed();
+			if (displayed) {
+				getTest().log(LogStatus.INFO, "Displayed: " + xpath);
+			}
+			return displayed;
+		} catch (NoSuchElementException e) {
+			getTest().log(LogStatus.INFO, "Element not found: " + xpath);
+			return false;
+		} catch (Exception e) {
+			getTest().log(LogStatus.ERROR, "Error checking display status of: " + xpath + " - " + e);
+			return false;
+		}
 	}
 
 	protected void verifyIsDisplayed(String xpath,String elementName){
@@ -403,7 +514,7 @@ public class ReusableMethods {
 			new Assertion().fail();
 		}
 	}
-	
+
 	protected void verifyIsDisabled(String xpath,String elementName){
 		try {
 			ewait(xpath);
@@ -418,7 +529,7 @@ public class ReusableMethods {
 			new Assertion().fail();
 		}
 	}
-	
+
 	protected void verifyIsEnabled(String xpath,String elementName){
 		try {
 			ewait(xpath);
@@ -429,73 +540,73 @@ public class ReusableMethods {
 			new Assertion().fail();
 		}
 	}
-	
+
 	protected String tearDown() {
 
-	    try {
+		try {
 
-	        UUID uuid = UUID.randomUUID();
+			UUID uuid = UUID.randomUUID();
 
-	        File scrFile = ((TakesScreenshot) driver)
-	                .getScreenshotAs(OutputType.FILE);
+			File scrFile = ((TakesScreenshot) driver)
+					.getScreenshotAs(OutputType.FILE);
 
-	        File dest = new File(getreportlocation() + uuid + ".png");
+			File dest = new File(getreportlocation() + uuid + ".png");
 
-	        FileUtils.copyFile(scrFile, dest);
+			FileUtils.copyFile(scrFile, dest);
 
-	        return dest.getAbsolutePath();
+			return dest.getAbsolutePath();
 
-	    } catch (Exception e) {
+		} catch (Exception e) {
 
-	        System.out.println("Error while generating screenshot:\n" + e);
+			System.out.println("Error while generating screenshot:\n" + e);
 
-	        return "";
-	    }
+			return "";
+		}
 	}
-	
+
 	public String addScreenShot(){
 
-	    if(driver != null){
+		if(driver != null){
 
-	        return getTest().addScreenCapture(tearDown());
+			return getTest().addScreenCapture(tearDown());
 
-	    }
+		}
 
-	    return "";
+		return "";
 	}
 
 	public void closeDriver(){
-	    if(driver != null){
-	        driver.quit();
-	        driver = null;
-	    }
+		if(driver != null){
+			driver.quit();
+			driver = null;
+		}
 	}
 
 	public static String getFormattedDateTime() {
 
-        LocalDateTime now = LocalDateTime.now();
+		LocalDateTime now = LocalDateTime.now();
 
-        int day = now.getDayOfMonth();
-        String suffix;
+		int day = now.getDayOfMonth();
+		String suffix;
 
-        if (day >= 11 && day <= 13) {
-            suffix = "th";
-        } else {
-            switch (day % 10) {
-                case 1: suffix = "st"; break;
-                case 2: suffix = "nd"; break;
-                case 3: suffix = "rd"; break;
-                default: suffix = "th";
-            }
-        }
+		if (day >= 11 && day <= 13) {
+			suffix = "th";
+		} else {
+			switch (day % 10) {
+			case 1: suffix = "st"; break;
+			case 2: suffix = "nd"; break;
+			case 3: suffix = "rd"; break;
+			default: suffix = "th";
+			}
+		}
 
-        return now.format(DateTimeFormatter.ofPattern("EEE, MMMM d"))
-                + suffix
-                + now.format(DateTimeFormatter.ofPattern(", yyyy, h:mm:ss a"));
-    }
-	
-	
-	
+		return now.format(DateTimeFormatter.ofPattern("EEE, MMMM d"))
+				+ suffix
+				+ now.format(DateTimeFormatter.ofPattern(", yyyy, h:mm:ss a"));
+	}
+
+
+
 	public String getResponse(String xpath) {
 		String message=null;
 		try {
@@ -507,32 +618,32 @@ public class ReusableMethods {
 		}
 		return message;
 	}
-	
-	
+
+
 	public void setCheckbox(String xpath, boolean shouldBeChecked, String fieldName) {
-	    try {
-	        WebElement checkbox = driver.findElement(By.xpath(xpath));
+		try {
+			WebElement checkbox = driver.findElement(By.xpath(xpath));
 
-	        boolean isChecked = checkbox.isSelected();
+			boolean isChecked = checkbox.isSelected();
 
-	        if (shouldBeChecked && !isChecked) {
-	            ((JavascriptExecutor)driver).executeScript("arguments[0].click();", checkbox);
-	            getTest().log(LogStatus.INFO, fieldName + " checkbox checked");
-	        } 
-	        else if (!shouldBeChecked && isChecked) {
-	            ((JavascriptExecutor)driver).executeScript("arguments[0].click();", checkbox);
-	            getTest().log(LogStatus.INFO, fieldName + " checkbox unchecked");
-	        } 
-	        else {
-	            getTest().log(LogStatus.INFO, fieldName + " checkbox already in desired state");
-	        }
+			if (shouldBeChecked && !isChecked) {
+				((JavascriptExecutor)driver).executeScript("arguments[0].click();", checkbox);
+				getTest().log(LogStatus.INFO, fieldName + " checkbox checked");
+			} 
+			else if (!shouldBeChecked && isChecked) {
+				((JavascriptExecutor)driver).executeScript("arguments[0].click();", checkbox);
+				getTest().log(LogStatus.INFO, fieldName + " checkbox unchecked");
+			} 
+			else {
+				getTest().log(LogStatus.INFO, fieldName + " checkbox already in desired state");
+			}
 
-	    } catch (Exception e) {
-	        getTest().log(LogStatus.FAIL, "Unable to handle checkbox: " + fieldName + addScreenShot());
-	    }
+		} catch (Exception e) {
+			getTest().log(LogStatus.FAIL, "Unable to handle checkbox: " + fieldName + addScreenShot());
+		}
 	}
-	
-	
+
+
 	public String randomPhoneNumber()
 	{
 		long rNum=System.currentTimeMillis();
@@ -540,55 +651,55 @@ public class ReusableMethods {
 		randomNum=randomNum.substring(2, 10);
 		String phoneNumber="98"+randomNum;
 		int i=1;
-	    while(phoneNumber.length()<10)
-	    {
-	    	rNum=System.currentTimeMillis();
-	    	randomNum=String.valueOf(rNum);
-	    	randomNum=randomNum.substring(2, 10);
+		while(phoneNumber.length()<10)
+		{
+			rNum=System.currentTimeMillis();
+			randomNum=String.valueOf(rNum);
+			randomNum=randomNum.substring(2, 10);
 			phoneNumber="98"+randomNum;
-	    	if(i==5)
-	    	{
-	    		break;
-	    	}
-	    	i++;
-	    }
+			if(i==5)
+			{
+				break;
+			}
+			i++;
+		}
 		return phoneNumber;
 	}
-	
-	
+
+
 	public String randomEmail()
 	{
-	    long rNum = System.currentTimeMillis();
-	    String randomNum = String.valueOf(rNum);
+		long rNum = System.currentTimeMillis();
+		String randomNum = String.valueOf(rNum);
 
-	    String email = "test" + randomNum + "@mail.com";
+		String email = "test" + randomNum + "@mail.com";
 
-	    return email;
+		return email;
 	}
 
-	
+
 	public void quitAllDrivers() {
 
-        if (driver != null) {
-            driver.quit();
-            driver = null;
-        }
-        
-        if (service != null) {
-            service.stop();
-            service = null;
-        }
-    }
-	
-	
+		if (driver != null) {
+			driver.quit();
+			driver = null;
+		}
+
+		if (service != null) {
+			service.stop();
+			service = null;
+		}
+	}
+
+
 	protected void switchToWebDriver() {
 		driver = webDriver;
 	}
-	
+
 	protected void switchToAndroidDriver() {
 		driver = androidDriver;
 	}
-	
+
 	protected void datePicker() {
 		Date date = new Date();
 
@@ -600,7 +711,7 @@ public class ReusableMethods {
 		driver.findElement(By.xpath("//select[contains(@class,'react-datepicker__year-select')]")).sendKeys(year);
 		driver.findElement(By.xpath("//div[contains(@class,'react-datepicker__day') and not(contains(@class,'outside-month')) and text()='"+day+"']")).click();
 	}
-	
+
 	protected void uploadFile(String xpath, String filePath, String elementName) {
 		try {
 			WebElement upload = driver.findElement(By.xpath(xpath));
@@ -612,7 +723,7 @@ public class ReusableMethods {
 			new Assertion().fail();
 		}
 	}
-	
+
 	protected void toastMessageValidation(String xpath, String expectedMessage, String elementName) {
 		try {
 			WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
@@ -631,6 +742,6 @@ public class ReusableMethods {
 			new Assertion().fail("Exception while validating toast message", e);
 		}
 	}
-	
-	
+
+
 }
